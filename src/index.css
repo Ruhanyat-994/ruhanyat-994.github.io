@@ -1,0 +1,82 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  background-color: #111827;
+  color: white;
+  font-family: 'Courier New', monospace;
+}
+
+/* Terminal glow effects */
+.terminal-glow {
+  box-shadow: 0 0 10px #06b6d4, 0 0 20px #06b6d4, 0 0 30px #06b6d4;
+}
+
+/* Cyberpunk gradient */
+.cyberpunk-gradient {
+  background: linear-gradient(45deg, #06b6d4, #a855f7);
+}
+
+/* Neon text effect */
+.neon-text {
+  text-shadow: 0 0 5px #06b6d4, 0 0 10px #06b6d4, 0 0 15px #06b6d4;
+}
+
+/* Markdown Styles */
+.prose {
+  max-width: none;
+}
+
+.prose pre {
+  background-color: #1a1a1a;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  margin: 1rem 0;
+}
+
+.prose code {
+  background-color: #2d2d2d;
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.25rem;
+  font-size: 0.875em;
+}
+
+.prose img {
+  margin: 2rem auto;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.prose blockquote {
+  border-left-width: 4px;
+  border-left-color: #06b6d4;
+  padding-left: 1rem;
+  font-style: italic;
+  color: #9ca3af;
+}
+
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 2rem 0;
+}
+
+.prose th {
+  background-color: #1f2937;
+  padding: 0.75rem 1rem;
+  text-align: left;
+}
+
+.prose td {
+  padding: 0.75rem 1rem;
+  border-top: 1px solid #374151;
+}
+
+.prose tr:nth-child(even) {
+  background-color: #1f2937;
+}
