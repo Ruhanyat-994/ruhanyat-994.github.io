@@ -42,3 +42,27 @@ locate the Override Configuration Properties section, and add spring.banner.loca
 and classpath:/META-INF/banner.txt
 
 # Nice Now you can show it to other devs and it will blow them away!
+
+```mermaid
+graph LR
+    A[Cloud-Native Applications] --> B[Microservices Architecture]
+    A --> C[Containerization]
+    A --> D[DevOps Practices]
+    A --> E[Continuous Delivery]
+    
+    B --> B1[Loosely coupled services]
+    B --> B2[Independent deployment]
+    B --> B3[Service communication via APIs]
+    
+    C --> C1[Docker containers]
+    C --> C2[Kubernetes orchestration]
+    C --> C3[Container registries]
+    
+    D --> D1[CI/CD pipelines]
+    D --> D2[Infrastructure as Code]
+    D --> D3[Monitoring & observability]
+    
+    E --> E1[Automated testing]
+    E --> E2[Blue-green deployment]
+    E --> E3[Feature flags]
+```
