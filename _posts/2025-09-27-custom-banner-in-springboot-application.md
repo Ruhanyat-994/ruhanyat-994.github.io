@@ -43,6 +43,7 @@ and classpath:/META-INF/banner.txt
 
 # Nice Now you can show it to other devs and it will blow them away!
 
+
 ```mermaid
 graph LR
     A[Cloud-Native Applications] --> B[Microservices Architecture]
