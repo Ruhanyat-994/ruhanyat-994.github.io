@@ -2,14 +2,14 @@
 title: "Hands-On Amazon VPC!"
 date: 2025-11-09 03:31:00 +0600
 categories: [Cloud_Native,AWS]
-tags: [cloud, devops, aws, vpc]
+tags: [Cloud, DevOps, AWS, VPC]
 ---
 
 # Amazon Virtual Private Cloud (VPC)
 
 VPC enables you to launch AWS resources in a logically `isolated virtual network` that you define.
 
-![VPC Architecture](..\assets\Images\vpc-img-1.png)
+![VPC Architecture](../assets/Images/vpc-img-1.png)
 
 
 ## **Availability Zones (AZs)**
