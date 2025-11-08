@@ -9,7 +9,7 @@ tags: [Cloud, DevOps, AWS, VPC]
 
 VPC enables you to launch AWS resources in a logically `isolated virtual network` that you define.
 
-![VPC Architecture](../assets/Images/vpc-img-1.png)
+![VPC Architecture](../assets/Images/vpc-image-1.png)
 
 
 ## **Availability Zones (AZs)**
