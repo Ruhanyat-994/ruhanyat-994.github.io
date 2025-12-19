@@ -8,8 +8,9 @@ tags: [Cloud, DevOps]
 ---
 ## Creating non interactive shell and user setup
 
+**Create a user with non-interactive shell for your organization on a specific server. This is essential for service accounts and automated processes that don't require interactive login capabilities.**
 
-```linux
+```shell
 sudo useradd -s /sbin/nologin kristy
 ```
 
@@ -18,7 +19,7 @@ sudo useradd -s /sbin/nologin kristy
 
 ## Temporary user setup with Expiry 
 
-```linux
+```shell
 sudo useradd -e 2026-12-24 kristy
 
 sudo passwd kristy
