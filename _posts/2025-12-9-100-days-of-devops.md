@@ -756,4 +756,47 @@ From jump host:
 curl http://stapp01:3004
 ```
 
+# Day 13
+---
+# IPtables Installation And Configuration
 
+We have one of our websites up and running on our Nautilus infrastructure in Stratos DC. Our security team has raised a concern that right now Apache’s port i.e `5000` is open for all since there is no firewall installed on these hosts. So we have decided to add some security layer for these hosts and after discussions and recommendations we have come up with the following requirements:
+
+1. Install `iptables` and all its dependencies on each app host.
+2. Block incoming port `5000` on all apps for everyone except for `LBR` host.
+3. Make sure the rules remain, even after system reboot.
+
+You have to jump to every application server and run this bash script there
+
+## Step 1: 
+
+```shell
+vi configure_firewall.sh
+```
+
+## Bash Script
+```shell
+#!/bin/bash
+LBR_IP="172.16.238.14"
+APP_PORT="5000"
+
+sudo yum install -y iptables iptables-services
+sudo iptables -F
+sudo iptables -A INPUT -p tcp --dport ${APP_PORT} -s ${LBR_IP} -j ACCEPT
+sudo iptables -A INPUT -p tcp --dport ${APP_PORT} -j REJECT
+sudo service iptables save
+sudo iptables -L -n --line-numbers
+
+```
+
+## Step 2:
+
+```sh
+chmod +x configure_firewall.sh
+```
+
+## Step 3:
+
+```shell
+sudo ./configure_firewall.sh
+```
