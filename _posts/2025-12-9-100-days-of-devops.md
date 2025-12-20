@@ -802,3 +802,84 @@ chmod +x configure_firewall.sh
 ```shell
 sudo ./configure_firewall.sh
 ```
+# Day 14
+---
+
+# Linux Process Troubleshooting
+
+The production support team of xFusionCorp Industries has deployed some of the latest monitoring tools to keep an eye on every service, application, etc. running on the systems. One of the monitoring systems reported about Apache service unavailability on one of the app servers in Stratos DC.
+
+ Identify the faulty app host and fix the issue. Make sure Apache service is up and running on all app hosts. They might not have hosted any code yet on these servers, so you don’t need to worry if Apache isn’t serving any pages. Just make sure the service is up and running. Also, make sure Apache is running on port _**`6100`**_ on all app servers.
+
+##  Check Apache service status
+
+```bash
+sudo systemctl status httpd
+```
+
+If stopped:
+
+```bash
+sudo systemctl start httpd
+sudo systemctl enable httpd
+```
+
+## Identify what is using port 6100
+
+```bash
+sudo netstat -tulnp | grep 6100
+```
+
+Example output:
+
+```
+Active Internet connections (only servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name    
+tcp        0      0 127.0.0.1:6100          0.0.0.0:*               LISTEN      430/sendmail: accep 
+```
+
+or
+
+```bash
+sudo ss -tulnp | grep 6100
+```
+
+Sendmail is running on port **6100**.
+## Resolve port conflict (sendmail case)
+
+```bash
+sudo systemctl stop sendmail
+sudo systemctl disable sendmail
+```
+
+Verify port is free:
+
+```bash
+sudo netstat -tulnp | grep 6100
+```
+
+(No output means the port is free.)
+## Start Apache after freeing the port
+
+```bash
+sudo systemctl start httpd
+sudo systemctl enable httpd
+```
+
+Verify Apache is listening:
+
+```bash
+sudo netstat -tulnp | grep 6100
+```
+
+Expected:
+
+```
+0.0.0.0:6100 LISTEN httpd
+```
+
+## Local validation on app server
+
+```bash
+curl http://localhost:6100
+```
