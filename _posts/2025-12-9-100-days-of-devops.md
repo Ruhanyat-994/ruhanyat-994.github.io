@@ -4,6 +4,17 @@ date: 2025-12-07 03:40:00 +0600
 categories: [DevOps,100-days]
 tags: [Cloud, DevOps]
 ---
+<figure style="max-width:720px; margin:0 auto; text-align:center;">
+  <img src="../assets/Images/100-days.png"
+       alt="100 Days of DevOps"
+       style="width:100%; max-width:720px; display:block; margin:0 auto;
+              border-radius:18px; box-shadow:0 8px 24px rgba(0,0,0,0.12);
+              border:1px solid rgba(0,0,0,0.06); object-fit:cover;" />
+  <figcaption style="font-size:0.9rem; color:var(--text-muted,#666); margin-top:8px;">
+    100 Days of DevOps
+  </figcaption>
+</figure>
+
 # Day 1
 ---
 ## Creating non interactive shell and user setup
