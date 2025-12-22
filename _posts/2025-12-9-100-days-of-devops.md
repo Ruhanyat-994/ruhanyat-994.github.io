@@ -895,7 +895,7 @@ Expected:
 curl http://localhost:6100
 ```
 
-# Day  14
+# Day  15
 ---
 
 The system admins team of `xFusionCorp Industries` needs to deploy a new application on `App Server 2` in `Stratos Datacenter`. They have some pre-requites to get ready that server for application deployment. Prepare the server as per requirements shared below:  
