@@ -1235,3 +1235,133 @@ TO kodekloud_tim;
 \l         -- list databases
 ```
 
+# Day 18
+---
+xFusionCorp Industries is planning to host a `WordPress` website on their infra in `Stratos Datacenter`. They have already done infrastructure configuration—for example, on the storage server they already have a shared directory `/vaw/www/html` that is mounted on each app host under `/var/www/html` directory. Please perform the following steps to accomplish the task:  
+
+a. Install httpd, php and its dependencies on all app hosts.  
+b. Apache should serve on port `5004` within the apps.  
+c. Install/Configure `MariaDB server` on DB Server.  
+d. Create a database named `kodekloud_db10` and create a database user named `kodekloud_roy` identified as password `B4zNgHA7Ya`. Further make sure this newly created user is able to perform all operation on the database you created.  
+e. Finally you should be able to access the website on LBR link, by clicking on the `App` button on the top bar. You should see a message like `App is able to connect to the database using user kodekloud_roy`
+
+
+## Install Apache & PHP
+
+```bash
+sudo yum install -y httpd php php-mysqli
+```
+
+## Start & Enable Apache
+
+```bash
+sudo systemctl start httpd
+sudo systemctl enable httpd
+```
+
+### Verify PHP Installation
+
+```bash
+php -v
+```
+
+## Change Apache Port to `5004`
+
+```bash
+sudo sed -i 's/^Listen .*/Listen 5004/' /etc/httpd/conf/httpd.conf
+```
+
+## Restart Apache
+
+```bash
+sudo systemctl restart httpd
+```
+
+## Verify Apache is Listening on 5004
+
+```bash
+sudo ss -tulnp | grep httpd
+```
+
+## Optional: Bash Script (App Server Automation)
+
+```bash
+#!/bin/bash
+set -e
+
+sudo yum install -y httpd php php-mysqli
+sudo systemctl start httpd
+sudo systemctl enable httpd
+sudo sed -i 's/^Listen .*/Listen 5004/' /etc/httpd/conf/httpd.conf
+sudo systemctl restart httpd
+php -v
+sudo ss -tulnp | grep httpd
+```
+
+Usage:
+
+```bash
+vi setup_apache_5004.sh
+chmod +x setup_apache_5004.sh
+./setup_apache_5004.sh
+```
+##  DATABASE SERVER SETUP
+
+**Host:** `stdb01.stratos.xfusioncorp.com`
+
+## SSH to DB Server
+
+```bash
+ssh peter@stdb01.stratos.xfusioncorp.com
+```
+
+## Install MariaDB Server
+
+```bash
+sudo yum install -y mariadb-server
+```
+
+##Start & Enable MariaDB
+
+```bash
+sudo systemctl start mariadb
+sudo systemctl enable mariadb
+```
+
+## Secure MariaDB
+
+```bash
+sudo mysql_secure_installation
+```
+
+> Set root password, remove anonymous users, disallow remote root login, remove test DB.
+
+## Login to MySQL
+
+```bash
+mysql -u root -p
+```
+
+##  Create Database
+
+```sql
+CREATE DATABASE kodekloud_db10;
+```
+##  Create Database User
+
+```sql
+CREATE USER 'kodekloud_roy'@'%' IDENTIFIED BY 'B4zNgHA7Ya';
+```
+
+## Grant Privileges
+
+```sql
+GRANT ALL PRIVILEGES ON kodekloud_db10.* TO 'kodekloud_roy'@'%';
+FLUSH PRIVILEGES;
+```
+
+## Verify Grants
+
+```sql
+SHOW GRANTS FOR 'kodekloud_roy'@'%';
+```
