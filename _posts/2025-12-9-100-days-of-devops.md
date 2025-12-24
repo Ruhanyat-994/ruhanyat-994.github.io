@@ -1160,3 +1160,78 @@ http {
     }
 }
 ```
+# Day 17
+---
+
+The Nautilus application development team has shared that they are planning to deploy one newly developed application on Nautilus infra in Stratos DC. The application uses PostgreSQL database, so as a pre-requisite we need to set up PostgreSQL database server as per requirements shared below:
+
+PostgreSQL database server is already installed on the Nautilus database server.
+
+- Create a database user `kodekloud_tim` and set its password to `LQfKeWWxWD`.
+- Create a database `kodekloud_db2` and grant full permissions to user `kodekloud_tim` on this database.
+
+> Please do not try to restart PostgreSQL server service.
+
+## 1. Verify `psql` Binary Location
+
+```bash
+which psql
+```
+
+**Output:**
+
+```text
+/usr/bin/psql
+```
+
+## 2. Switch to PostgreSQL Superuser
+
+Login as the `postgres` user using `sudo`:
+
+```bash
+sudo -u postgres psql
+```
+
+ **Note:**  
+The warning below is normal and can be ignored:
+
+```text
+could not change directory to "/home/peter": Permission denied
+```
+
+## 3. Create a New PostgreSQL User
+
+```sql
+CREATE USER kodekloud_tim
+WITH ENCRYPTED PASSWORD 'LQfKeWWxWD';
+```
+
+ User created successfully.
+
+
+## 4. Create a New Database
+
+```sql
+CREATE DATABASE kodekloud_db2;
+```
+
+ Database created.
+
+
+## 5. Grant Privileges on Database to User
+
+```sql
+GRANT ALL PRIVILEGES
+ON DATABASE kodekloud_db2
+TO kodekloud_tim;
+```
+
+ Permissions granted.
+
+## 6. Verify Users and Databases (Optional)
+
+```sql
+\du        -- list users
+\l         -- list databases
+```
+
