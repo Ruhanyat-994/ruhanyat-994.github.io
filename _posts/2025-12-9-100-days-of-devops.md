@@ -15,9 +15,9 @@ tags: [Cloud, DevOps]
   </figcaption>
 </figure>
 
-# Day 1
+## Day 1
 ---
-## Creating non interactive shell and user setup
+### Creating non interactive shell and user setup
 
 Create a user with non-interactive shell for your organization on a specific server. This is essential for service accounts and automated processes that don't require interactive login capabilities.
 
@@ -26,10 +26,10 @@ Create a user with non-interactive shell for your organization on a specific ser
 sudo useradd -s /sbin/nologin kristy
 ```
 
-# Day 2
+## Day 2
 ---
 
-## Temporary user setup with Expiry 
+### Temporary user setup with Expiry 
 
 ```shell
 sudo useradd -e 2026-12-24 kristy
@@ -38,10 +38,10 @@ sudo passwd kristy
 ```
 
 
-# Day 3
+## Day 3
 ---
 
-## Secure Root ssh access
+### Secure Root ssh access
 
 ```shell
 sudo nano /etc/ssh/sshd_config
@@ -49,7 +49,7 @@ sudo nano /etc/ssh/sshd_config
 
 - `PermitRootLogin no` 
 - You have to do it for every single host!
-# Day 4
+## Day 4
 ---
 
 
@@ -77,7 +77,7 @@ Welcome To KodeKloud
 
 ```
 
-# Day 5
+## Day 5
 ---
 Following a security audit, the xFusionCorp Industries security team has opted to enhance application and server security with SELinux. To initiate testing, the following requirements have been established for `App server 2` in the `Stratos Datacenter:`  
 
@@ -123,7 +123,7 @@ SELINUXTYPE=targeted
 
 ```
 
-# Day 6
+## Day 6
 ---
 
 The `Nautilus` system admins team has prepared scripts to automate several day-to-day tasks. They want them to be deployed on all app servers in `Stratos DC` on a set schedule. Before that they need to test similar functionality with a sample cron job. Therefore, perform the steps below:  
@@ -159,7 +159,7 @@ sudo crontab -l
 
 and wait 5 minutes to check cron_text in /tmp/
 
-## Automation Script
+### Automation Script
 ```shell
 #!/bin/sh
 
@@ -225,31 +225,31 @@ sudo systemctl status crond --no-pager -l
 ```
 
 
-# Day 7
+## Day 7
 ---
 
 Linux SSH Authentication
 
 The system admins team of xFusionCorp Industries has set up some scripts on jump host that run on regular intervals and perform operations on all app servers in Stratos Datacenter. To make these scripts work properly we need to make sure the thor user on jump host has password-less SSH access to all app servers through their respective sudo users (i.e tony for app server 1). Based on the requirements, perform the following: Set up a password-less authentication from user thor on jump host to all app servers through their respective sudo users.
 
-## Login to jump host as thor
+### Login to jump host as thor
 ```shell
 ssh thor@jump_host
 ```
 
-## Generate SSH key (press Enter for all prompts)
+### Generate SSH key (press Enter for all prompts)
 ```shell
 ssh-keygen -t rsa -b 2048
 ```
 
-## Copy key to respective sudo users on app servers
+### Copy key to respective sudo users on app servers
 ```shell
 ssh-copy-id tony@stapp01
 ssh-copy-id steve@stapp02
 ssh-copy-id banner@stapp03
 ```
 
-## Verify password-less access
+### Verify password-less access
 ```shell
 ssh tony@stapp01.stratos.xfusioncorp.com
 ssh steve@stapp02.stratos.xfusioncorp.com
@@ -258,61 +258,61 @@ ssh banner@stapp03.stratos.xfusioncorp.com
 
 
 
-# Day 8
+## Day 8
 ---
 During the weekly meeting, the Nautilus DevOps team discussed about the automation and configuration management solutions that they want to implement. While considering several options, the team has decided to go with Ansible for now due to its simple setup and minimal pre-requisites. The team wanted to start testing using Ansible, so they have decided to use jump host as an Ansible controller to test different kind of tasks on rest of the servers.
 
 Install ansible version 4.7.0 on Jump host using pip3 only. Make sure Ansible binary is available globally on this system, i.e all users on this system are able to run Ansible commands.
 
 
-## Check pip3 version
+### Check pip3 version
 ```bash
 pip3 --version
 ````
 
-##  Install pip3 (if not already installed)
+###  Install pip3 (if not already installed)
 
 ```bash
 sudo yum install -y python3-pip
 ```
 
-##  Install Ansible 4.7.0 globally using pip3
+###  Install Ansible 4.7.0 globally using pip3
 
 ```bash
 sudo pip3 install ansible==4.7.0
 ```
 
-##  Verify Ansible version
+###  Verify Ansible version
 
 ```bash
 ansible --version
 ```
 
-## Check Ansible binary location
+### Check Ansible binary location
 
 ```bash
 which ansible
 ```
 
-##  Verify PATH includes Ansible binary directory
+###  Verify PATH includes Ansible binary directory
 
 ```bash
 echo $PATH
 ```
 
-## Run Ansible (basic command check)
+### Run Ansible (basic command check)
 
 ```bash
 ansible
 ```
 
-# Day 9
+## Day 9
 ---
 There is a critical issue going on with the `Nautilus` application in `Stratos DC`. The production support team identified that the application is unable to connect to the database. After digging into the issue, the team found that mariadb service is down on the database server.  
 Look into the issue and fix the same.
 
 
-## Check OS Information (Verify Environment)
+### Check OS Information (Verify Environment)
 
 ```bash
 cat /etc/release
@@ -322,7 +322,7 @@ cat /etc/os-release
 
 ---
 
-##  Check MariaDB Service Status
+###  Check MariaDB Service Status
 
 Confirms whether MariaDB is running, stopped, or failed.
 
@@ -333,7 +333,7 @@ sudo systemctl status mariadb.service
 
 
 
-##  Attempt to Start MariaDB
+###  Attempt to Start MariaDB
 
 Initial attempt to bring the database service online.
 
@@ -343,7 +343,7 @@ sudo systemctl start mariadb
 
 ---
 
-##  Check MariaDB Error Logs (Root Cause Analysis)
+###  Check MariaDB Error Logs (Root Cause Analysis)
 
 Used when the service fails to start. Shows InnoDB and permission errors.
 
@@ -353,7 +353,7 @@ sudo tail /var/log/mariadb/mariadb.log
 
 ---
 
-## Fix MariaDB Data Directory Ownership
+### Fix MariaDB Data Directory Ownership
 
 MariaDB runs as `mysql` user and must own its data directory.
 
@@ -363,7 +363,7 @@ sudo chown -R mysql:mysql /var/lib/mysql
 
 ---
 
-##  Fix Data Directory Permissions
+###  Fix Data Directory Permissions
 
 Ensures MariaDB can read/write database files.
 
@@ -373,7 +373,7 @@ sudo chmod 755 /var/lib/mysql
 
 ---
 
-##  Create MySQL Socket Directory
+###  Create MySQL Socket Directory
 
 MariaDB needs this directory to create its socket file.
 
@@ -383,7 +383,7 @@ sudo mkdir -p /var/run/mysqld
 
 ---
 
-##  Set Correct Ownership for Socket Directory
+###  Set Correct Ownership for Socket Directory
 
 Allows MariaDB to bind to the socket.
 
@@ -393,7 +393,7 @@ sudo chown mysql:mysql /var/run/mysqld
 
 ---
 
-## Restart MariaDB After Fix
+### Restart MariaDB After Fix
 
 Applies permission changes and restarts the service.
 
@@ -403,7 +403,7 @@ sudo systemctl restart mariadb
 
 ---
 
-## Verify MariaDB Is Running
+### Verify MariaDB Is Running
 
 Final confirmation that the issue is resolved.
 
@@ -413,7 +413,7 @@ sudo systemctl status mariadb.service
 
 
 
-# Day 10
+## Day 10
 ---
 The production support team of `xFusionCorp Industries` is working on developing some bash scripts to automate different day to day tasks. One is to create a bash script for taking websites backup. They have a static website running on `App Server 3` in `Stratos Datacenter`, and they need to create a bash script named `news_backup.sh` which should accomplish the following tasks. (Also remember to place the script under `/scripts` directory on `App Server 3`).  
   
@@ -434,7 +434,7 @@ It’s written so you can **revise quickly or paste into notes**.
 
 
 
-### 1. Basic Navigation & Checks
+#### 1. Basic Navigation & Checks
 
 ```bash
 ls
@@ -447,7 +447,7 @@ ls -la
 
 
 
-###  2. Generate SSH Key (Passwordless SCP)
+####  2. Generate SSH Key (Passwordless SCP)
 
 ```bash
 ssh-keygen -t rsa -b 2048
@@ -462,7 +462,7 @@ ls
 
 
 
-### 3. Copy SSH Key to Nautilus Backup Server
+#### 3. Copy SSH Key to Nautilus Backup Server
 
 ```bash
 ssh-copy-id clint@stbkp01.stratos.xfusioncorp.com
@@ -476,7 +476,7 @@ ssh clint@stbkp01.stratos.xfusioncorp.com
 
 
 
-###  4. Create Backup Script
+####  4. Create Backup Script
 
 Navigate to scripts directory:
 
@@ -499,7 +499,7 @@ chmod +x beta_backup.sh
 
 
 
-###  5. Install Required Package (Outside Script)
+####  5. Install Required Package (Outside Script)
 
 ```bash
 sudo yum install zip
@@ -508,10 +508,10 @@ sudo yum install zip
 `sudo` is **not used inside the script**, only during setup.
 
 
-# Day 11
+## Day 11
 ---
 
-## Install and Setup Tomcat Server
+### Install and Setup Tomcat Server
 
 
 The Nautilus application development team recently finished the beta version of one of their Java-based applications, which they are planning to deploy on one of the app servers in Stratos DC. After an internal team meeting, they have decided to use the tomcat application server. Based on the requirements mentioned below complete the task:
@@ -522,7 +522,7 @@ The Nautilus application development team recently finished the beta version of 
 
 Deploy it on this tomcat server and make sure the webpage works directly on base URL i.e `curl http://stapp01:3001`
 
-## 1. Install Tomcat on **App Server 1 (stapp01)**
+### 1. Install Tomcat on **App Server 1 (stapp01)**
 
 Login to **App Server 1**:
 
@@ -538,7 +538,7 @@ sudo yum install -y tomcat
 
 ---
 
-## 2. Configure Tomcat to Run on **Port 3001**
+### 2. Configure Tomcat to Run on **Port 3001**
 
 Edit Tomcat server configuration:
 
@@ -566,7 +566,7 @@ Save and exit.
 
 ---
 
-## 3. Copy `ROOT.war` from Jump Host to App Server 1
+### 3. Copy `ROOT.war` from Jump Host to App Server 1
 
 Exit to **Jump Host** (if needed):
 
@@ -597,7 +597,7 @@ sudo mv /tmp/ROOT.war /usr/share/tomcat/webapps/
 
 ---
 
-## 4. Start and Enable Tomcat
+### 4. Start and Enable Tomcat
 
 ```bash
 sudo systemctl start tomcat
@@ -612,7 +612,7 @@ sudo netstat -tulnp | grep 3001
 
 ---
 
-## 5. Verify Application Deployment
+### 5. Verify Application Deployment
 
 Test from **App Server 1**:
 
@@ -629,7 +629,7 @@ curl http://stapp01:3001
  If the webpage content loads, the deployment is **successful**.
 
 
-# Day 12
+## Day 12
 ---
 Our monitoring tool has reported an issue in `Stratos Datacenter`. One of our app servers has an issue, as its Apache service is not reachable on port `3004` (which is the Apache port). The service itself could be down, the firewall could be at fault, or something else could be causing the issue.  
 
@@ -641,7 +641,7 @@ Once fixed, you can test the same using command `curl http://stapp01:3004` comma
 `Note:` Please do not try to alter the existing `index.html` code, as it will lead to task failure.
 
 
-## 1. Verify issue from jump host
+### 1. Verify issue from jump host
 
 ```bash
 curl http://stapp01:3004
@@ -655,7 +655,7 @@ Purpose:
 - Identifies network vs service-level issues
     
 - Then `ssh tony@stapp01`
-## 2. Check Apache service status
+### 2. Check Apache service status
 
 ```bash
 sudo systemctl status httpd
@@ -669,7 +669,7 @@ sudo systemctl enable httpd
 ```
 
 
-## 3. Identify what is using port 3004
+### 3. Identify what is using port 3004
 
 ```bash
 sudo netstat -tulnp | grep 3004
@@ -692,7 +692,7 @@ sudo ss -tulnp | grep 3004
 Sendmail is running on port 3004
 
 
-## 4. Resolve port conflict (sendmail case)
+### 4. Resolve port conflict (sendmail case)
 
 ```bash
 sudo systemctl stop sendmail
@@ -705,7 +705,7 @@ Verify port is free:
 sudo netstat -tulnp | grep 3004
 ```
 
-## 5. Start Apache after freeing the port
+### 5. Start Apache after freeing the port
 
 ```bash
 sudo systemctl start httpd
@@ -724,13 +724,13 @@ Expected:
 0.0.0.0:3004 LISTEN httpd
 ```
 
-## 6. Local validation on app server
+### 6. Local validation on app server
 
 ```bash
 curl http://localhost:3004
 ```
 
-## 7. Check firewall service availability
+### 7. Check firewall service availability
 
 ```bash
 sudo systemctl status firewalld
@@ -738,7 +738,7 @@ sudo systemctl status firewalld
 
 If firewalld is not installed, proceed to iptables checks.
 
-## 8. Inspect iptables rules
+### 8. Inspect iptables rules
 
 ```bash
 sudo iptables -L -n
@@ -753,7 +753,7 @@ Key things to check:
 - Explicit allow rules for required ports
     
 
-## 9. Allow Apache port via iptables (if needed)
+### 9. Allow Apache port via iptables (if needed)
 
 ```bash
 sudo iptables -I INPUT 4 -p tcp --dport 3004 -j ACCEPT
@@ -761,7 +761,7 @@ sudo iptables -I INPUT 4 -p tcp --dport 3004 -j ACCEPT
 
 This inserts the rule before the final REJECT rule.
 
-## 10. Final external test (pass condition)
+### 10. Final external test (pass condition)
 
 From jump host:
 
@@ -769,7 +769,7 @@ From jump host:
 curl http://stapp01:3004
 ```
 
-# Day 13
+## Day 13
 ---
 # IPtables Installation And Configuration
 
@@ -781,13 +781,13 @@ We have one of our websites up and running on our Nautilus infrastructure in Str
 
 You have to jump to every application server and run this bash script there
 
-## Step 1: 
+### Step 1: 
 
 ```shell
 vi configure_firewall.sh
 ```
 
-## Bash Script
+### Bash Script
 ```shell
 #!/bin/bash
 LBR_IP="172.16.238.14"
@@ -802,18 +802,18 @@ sudo iptables -L -n --line-numbers
 
 ```
 
-## Step 2:
+### Step 2:
 
 ```sh
 chmod +x configure_firewall.sh
 ```
 
-## Step 3:
+### Step 3:
 
 ```shell
 sudo ./configure_firewall.sh
 ```
-# Day 14
+## Day 14
 ---
 
 # Linux Process Troubleshooting
@@ -822,7 +822,7 @@ The production support team of xFusionCorp Industries has deployed some of the l
 
  Identify the faulty app host and fix the issue. Make sure Apache service is up and running on all app hosts. They might not have hosted any code yet on these servers, so you don’t need to worry if Apache isn’t serving any pages. Just make sure the service is up and running. Also, make sure Apache is running on port _**`6100`**_ on all app servers.
 
-##  Check Apache service status
+###  Check Apache service status
 
 ```bash
 sudo systemctl status httpd
@@ -835,7 +835,7 @@ sudo systemctl start httpd
 sudo systemctl enable httpd
 ```
 
-## Identify what is using port 6100
+### Identify what is using port 6100
 
 ```bash
 sudo netstat -tulnp | grep 6100
@@ -856,7 +856,7 @@ sudo ss -tulnp | grep 6100
 ```
 
 Sendmail is running on port **6100**.
-## Resolve port conflict (sendmail case)
+### Resolve port conflict (sendmail case)
 
 ```bash
 sudo systemctl stop sendmail
@@ -870,7 +870,7 @@ sudo netstat -tulnp | grep 6100
 ```
 
 (No output means the port is free.)
-## Start Apache after freeing the port
+### Start Apache after freeing the port
 
 ```bash
 sudo systemctl start httpd
@@ -889,13 +889,13 @@ Expected:
 0.0.0.0:6100 LISTEN httpd
 ```
 
-## Local validation on app server
+### Local validation on app server
 
 ```bash
 curl http://localhost:6100
 ```
 
-# Day  15
+## Day  15
 ---
 
 The system admins team of `xFusionCorp Industries` needs to deploy a new application on `App Server 2` in `Stratos Datacenter`. They have some pre-requites to get ready that server for application deployment. Prepare the server as per requirements shared below:  
@@ -907,7 +907,7 @@ The system admins team of `xFusionCorp Industries` needs to deploy a new applica
 
 
 
-## Install & Enable Nginx
+### Install & Enable Nginx
 
 ```bash
 sudo yum install -y nginx
@@ -916,27 +916,27 @@ sudo systemctl enable nginx
 systemctl status nginx
 ```
 
-## Prepare SSL Directory
+### Prepare SSL Directory
 
 ```bash
 sudo mkdir -p /etc/nginx/ssl
 ```
 
-## Move SSL Certificate & Key
+### Move SSL Certificate & Key
 
 ```bash
 sudo mv /tmp/nautilus.crt /etc/nginx/ssl/
 sudo mv /tmp/nautilus.key /etc/nginx/ssl/
 ```
 
-## Set Secure Permissions
+### Set Secure Permissions
 
 ```bash
 sudo chmod 600 /etc/nginx/ssl/nautilus.key
 sudo chmod 644 /etc/nginx/ssl/nautilus.crt
 ```
 
-##  Configure Nginx for HTTPS
+###  Configure Nginx for HTTPS
 
 ```bash
 sudo vi /etc/nginx/nginx.conf
@@ -949,7 +949,7 @@ ssl_certificate /etc/nginx/ssl/nautilus.crt;
 ssl_certificate_key /etc/nginx/ssl/nautilus.key;
 ```
 
-## Create Application Page
+### Create Application Page
 
 ```bash
 sudo vi /usr/share/nginx/html/index.html
@@ -968,22 +968,22 @@ sudo rm /usr/share/nginx/html/index.html
 sudo vi /usr/share/nginx/html/index.html
 ```
 
-## Validate & Reload Nginx
+### Validate & Reload Nginx
 
 ```bash
 sudo nginx -t
 sudo systemctl reload nginx
 ```
 
-## Test HTTPS from Jump Host
+### Test HTTPS from Jump Host
 
-### Check headers (SSL + HTTP/2)
+#### Check headers (SSL + HTTP/2)
 
 ```bash
 curl -Ik https://<app-server-ip>/
 ```
 
-### Check page content
+#### Check page content
 
 ```bash
 curl -k https://<app-server-ip>/
@@ -995,7 +995,7 @@ curl -k https://<app-server-ip>/
 Welcome!
 ```
 
-# Day 16
+## Day 16
 ---
 
 Day by day traffic is increasing on one of the websites managed by the Nautilus production support team. Therefore, the team has observed a degradation in website performance. Following discussions about this issue, the team has decided to deploy this application on a high availability stack i.e on Nautilus infra in Stratos DC. They started the migration last month and it is almost done, as only the LBR server configuration is pending. Configure LBR server as per the information given below:
@@ -1007,7 +1007,7 @@ Day by day traffic is increasing on one of the websites managed by the Nautilus 
 
 
 
-## 1. Verify Apache (`httpd`) Service on App Servers
+### 1. Verify Apache (`httpd`) Service on App Servers
 
 Login to **each app server** and ensure the Apache service is running and listening on the correct port.
 
@@ -1015,7 +1015,7 @@ Login to **each app server** and ensure the Apache service is running and listen
 sudo ss -tlnup
 ```
 
-### Sample Output
+#### Sample Output
 
 ```text
 Netid   State   Recv-Q  Send-Q  Local Address:Port   Peer Address:Port   Process
@@ -1027,7 +1027,7 @@ tcp     LISTEN  0       128     0.0.0.0:22           0.0.0.0:*           users:(
 
 ---
 
-## 2. Install and Start NGINX on Load Balancer Server
+### 2. Install and Start NGINX on Load Balancer Server
 
 Login to the **LBR server** and install NGINX.
 
@@ -1039,7 +1039,7 @@ sudo systemctl start nginx
 
 ---
 
-## 3. Configure NGINX Load Balancer
+### 3. Configure NGINX Load Balancer
 
 Edit the NGINX configuration file:
 
@@ -1047,7 +1047,7 @@ Edit the NGINX configuration file:
 sudo vi /etc/nginx/nginx.conf
 ```
 
-### 3.1 Add Upstream Backend Servers
+#### 3.1 Add Upstream Backend Servers
 
 Inside the `http` block (before the `server` block), add:
 
@@ -1061,7 +1061,7 @@ upstream stapp {
 
 ---
 
-### 3.2 Configure Proxy Pass
+#### 3.2 Configure Proxy Pass
 
 Inside the `server { listen 80; }` block:
 
@@ -1084,7 +1084,7 @@ location / {
 
 ---
 
-### 3.3 Validate and Restart NGINX
+#### 3.3 Validate and Restart NGINX
 
 ```bash
 sudo nginx -t
@@ -1093,7 +1093,7 @@ sudo systemctl restart nginx
 
 ---
 
-## 4. Full NGINX Load Balancer Configuration
+### 4. Full NGINX Load Balancer Configuration
 
 ```nginx
 user nginx;
@@ -1160,7 +1160,7 @@ http {
     }
 }
 ```
-# Day 17
+## Day 17
 ---
 
 The Nautilus application development team has shared that they are planning to deploy one newly developed application on Nautilus infra in Stratos DC. The application uses PostgreSQL database, so as a pre-requisite we need to set up PostgreSQL database server as per requirements shared below:
@@ -1172,7 +1172,7 @@ PostgreSQL database server is already installed on the Nautilus database server.
 
 > Please do not try to restart PostgreSQL server service.
 
-## 1. Verify `psql` Binary Location
+### 1. Verify `psql` Binary Location
 
 ```bash
 which psql
@@ -1184,7 +1184,7 @@ which psql
 /usr/bin/psql
 ```
 
-## 2. Switch to PostgreSQL Superuser
+### 2. Switch to PostgreSQL Superuser
 
 Login as the `postgres` user using `sudo`:
 
@@ -1199,7 +1199,7 @@ The warning below is normal and can be ignored:
 could not change directory to "/home/peter": Permission denied
 ```
 
-## 3. Create a New PostgreSQL User
+### 3. Create a New PostgreSQL User
 
 ```sql
 CREATE USER kodekloud_tim
@@ -1209,7 +1209,7 @@ WITH ENCRYPTED PASSWORD 'LQfKeWWxWD';
  User created successfully.
 
 
-## 4. Create a New Database
+### 4. Create a New Database
 
 ```sql
 CREATE DATABASE kodekloud_db2;
@@ -1218,7 +1218,7 @@ CREATE DATABASE kodekloud_db2;
  Database created.
 
 
-## 5. Grant Privileges on Database to User
+### 5. Grant Privileges on Database to User
 
 ```sql
 GRANT ALL PRIVILEGES
@@ -1228,14 +1228,14 @@ TO kodekloud_tim;
 
  Permissions granted.
 
-## 6. Verify Users and Databases (Optional)
+### 6. Verify Users and Databases (Optional)
 
 ```sql
 \du        -- list users
 \l         -- list databases
 ```
 
-# Day 18
+## Day 18
 ---
 xFusionCorp Industries is planning to host a `WordPress` website on their infra in `Stratos Datacenter`. They have already done infrastructure configuration—for example, on the storage server they already have a shared directory `/vaw/www/html` that is mounted on each app host under `/var/www/html` directory. Please perform the following steps to accomplish the task:  
 
@@ -1246,44 +1246,44 @@ d. Create a database named `kodekloud_db10` and create a database user named `ko
 e. Finally you should be able to access the website on LBR link, by clicking on the `App` button on the top bar. You should see a message like `App is able to connect to the database using user kodekloud_roy`
 
 
-## Install Apache & PHP
+### Install Apache & PHP
 
 ```bash
 sudo yum install -y httpd php php-mysqli
 ```
 
-## Start & Enable Apache
+### Start & Enable Apache
 
 ```bash
 sudo systemctl start httpd
 sudo systemctl enable httpd
 ```
 
-### Verify PHP Installation
+#### Verify PHP Installation
 
 ```bash
 php -v
 ```
 
-## Change Apache Port to `5004`
+### Change Apache Port to `5004`
 
 ```bash
 sudo sed -i 's/^Listen .*/Listen 5004/' /etc/httpd/conf/httpd.conf
 ```
 
-## Restart Apache
+### Restart Apache
 
 ```bash
 sudo systemctl restart httpd
 ```
 
-## Verify Apache is Listening on 5004
+### Verify Apache is Listening on 5004
 
 ```bash
 sudo ss -tulnp | grep httpd
 ```
 
-## Optional: Bash Script (App Server Automation)
+### Optional: Bash Script (App Server Automation)
 
 ```bash
 #!/bin/bash
@@ -1305,30 +1305,30 @@ vi setup_apache_5004.sh
 chmod +x setup_apache_5004.sh
 ./setup_apache_5004.sh
 ```
-##  DATABASE SERVER SETUP
+###  DATABASE SERVER SETUP
 
 **Host:** `stdb01.stratos.xfusioncorp.com`
 
-## SSH to DB Server
+### SSH to DB Server
 
 ```bash
 ssh peter@stdb01.stratos.xfusioncorp.com
 ```
 
-## Install MariaDB Server
+### Install MariaDB Server
 
 ```bash
 sudo yum install -y mariadb-server
 ```
 
-##Start & Enable MariaDB
+###Start & Enable MariaDB
 
 ```bash
 sudo systemctl start mariadb
 sudo systemctl enable mariadb
 ```
 
-## Secure MariaDB
+### Secure MariaDB
 
 ```bash
 sudo mysql_secure_installation
@@ -1336,36 +1336,36 @@ sudo mysql_secure_installation
 
 > Set root password, remove anonymous users, disallow remote root login, remove test DB.
 
-## Login to MySQL
+### Login to MySQL
 
 ```bash
 mysql -u root -p
 ```
 
-##  Create Database
+###  Create Database
 
 ```sql
 CREATE DATABASE kodekloud_db10;
 ```
-##  Create Database User
+###  Create Database User
 
 ```sql
 CREATE USER 'kodekloud_roy'@'%' IDENTIFIED BY 'B4zNgHA7Ya';
 ```
 
-## Grant Privileges
+### Grant Privileges
 
 ```sql
 GRANT ALL PRIVILEGES ON kodekloud_db10.* TO 'kodekloud_roy'@'%';
 FLUSH PRIVILEGES;
 ```
 
-## Verify Grants
+### Verify Grants
 
 ```sql
 SHOW GRANTS FOR 'kodekloud_roy'@'%';
 ```
 
-## Day 13
+#### Day 13
 
-### Day 13.1 
+##### Day 13.1 
