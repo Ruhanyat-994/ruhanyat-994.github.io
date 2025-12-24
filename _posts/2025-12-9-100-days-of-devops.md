@@ -15,7 +15,7 @@ tags: [Cloud, DevOps]
   </figcaption>
 </figure>
 
-## Day 1 : Linux User Setup with Non-Interactive Shell
+## **Day 1 : Linux User Setup with Non-Interactive Shell**
 ---
 ### Creating non interactive shell and user setup
 
@@ -26,7 +26,7 @@ Create a user with non-interactive shell for your organization on a specific ser
 sudo useradd -s /sbin/nologin kristy
 ```
 
-## Day 2: Temporary User Setup with Expiry
+## **Day 2: Temporary User Setup with Expiry**
 ---
 
 ### Temporary user setup with Expiry 
@@ -38,7 +38,7 @@ sudo passwd kristy
 ```
 
 
-## Day 3: Secure Root SSH Access
+## **Day 3: Secure Root SSH Access**
 ---
 
 ### Secure Root ssh access
@@ -50,7 +50,7 @@ sudo nano /etc/ssh/sshd_config
 - `PermitRootLogin no` 
 - You have to do it for every single host!
 
-## Day 4:Script Execution Permissions
+## **Day 4:Script Execution Permissions**
 ---
 
 
@@ -78,7 +78,7 @@ Welcome To KodeKloud
 
 ```
 
-## Day 5: SElinux Installation and Configuration
+## **Day 5: SElinux Installation and Configuration**
 ---
 Following a security audit, the xFusionCorp Industries security team has opted to enhance application and server security with SELinux. To initiate testing, the following requirements have been established for `App server 2` in the `Stratos Datacenter:`  
 
@@ -124,7 +124,7 @@ SELINUXTYPE=targeted
 
 ```
 
-## Day 6: Create a Cron Job
+## **Day 6: Create a Cron Job**
 ---
 
 The `Nautilus` system admins team has prepared scripts to automate several day-to-day tasks. They want them to be deployed on all app servers in `Stratos DC` on a set schedule. Before that they need to test similar functionality with a sample cron job. Therefore, perform the steps below:  
@@ -226,7 +226,7 @@ sudo systemctl status crond --no-pager -l
 ```
 
 
-## Day 7: Linux SSH Authentication
+## **Day 7: Linux SSH Authentication**
 ---
 
 Linux SSH Authentication
@@ -259,7 +259,7 @@ ssh banner@stapp03.stratos.xfusioncorp.com
 
 
 
-## Day 8: Install Ansible
+## **Day 8: Install Ansible**
 ---
 During the weekly meeting, the Nautilus DevOps team discussed about the automation and configuration management solutions that they want to implement. While considering several options, the team has decided to go with Ansible for now due to its simple setup and minimal pre-requisites. The team wanted to start testing using Ansible, so they have decided to use jump host as an Ansible controller to test different kind of tasks on rest of the servers.
 
@@ -307,7 +307,7 @@ echo $PATH
 ansible
 ```
 
-## Day 9: MariaDB Troubleshooting
+## **Day 9: MariaDB Troubleshooting**
 ---
 There is a critical issue going on with the `Nautilus` application in `Stratos DC`. The production support team identified that the application is unable to connect to the database. After digging into the issue, the team found that mariadb service is down on the database server.  
 Look into the issue and fix the same.
@@ -414,7 +414,7 @@ sudo systemctl status mariadb.service
 
 
 
-## Day 10: Linux Bash Scripts
+## **Day 10: Linux Bash Scripts**
 ---
 The production support team of `xFusionCorp Industries` is working on developing some bash scripts to automate different day to day tasks. One is to create a bash script for taking websites backup. They have a static website running on `App Server 3` in `Stratos Datacenter`, and they need to create a bash script named `news_backup.sh` which should accomplish the following tasks. (Also remember to place the script under `/scripts` directory on `App Server 3`).  
   
@@ -509,7 +509,7 @@ sudo yum install zip
 `sudo` is **not used inside the script**, only during setup.
 
 
-## Day 11: Install and Configure Tomcat Server
+## **Day 11: Install and Configure Tomcat Server**
 ---
 
 ### Install and Setup Tomcat Server
@@ -630,7 +630,7 @@ curl http://stapp01:3001
  If the webpage content loads, the deployment is **successful**.
 
 
-## Day 12: Linux Network Services
+## **Day 12: Linux Network Services**
 ---
 Our monitoring tool has reported an issue in `Stratos Datacenter`. One of our app servers has an issue, as its Apache service is not reachable on port `3004` (which is the Apache port). The service itself could be down, the firewall could be at fault, or something else could be causing the issue.  
 
@@ -770,7 +770,7 @@ From jump host:
 curl http://stapp01:3004
 ```
 
-## Day 13: IPtables Installation And Configuration
+## **Day 13: IPtables Installation And Configuration**
 ---
 # IPtables Installation And Configuration
 
@@ -814,7 +814,7 @@ chmod +x configure_firewall.sh
 ```shell
 sudo ./configure_firewall.sh
 ```
-## Day 14: Linux Process Troubleshooting
+## **Day 14: Linux Process Troubleshooting**
 ---
 
 # Linux Process Troubleshooting
@@ -896,7 +896,7 @@ Expected:
 curl http://localhost:6100
 ```
 
-## Day 15: Setup SSL for Nginx
+## **Day 15: Setup SSL for Nginx**
 ---
 
 The system admins team of `xFusionCorp Industries` needs to deploy a new application on `App Server 2` in `Stratos Datacenter`. They have some pre-requites to get ready that server for application deployment. Prepare the server as per requirements shared below:  
@@ -996,7 +996,7 @@ curl -k https://<app-server-ip>/
 Welcome!
 ```
 
-## Day 16: Install and Configure Nginx as an LBR
+## **Day 16: Install and Configure Nginx as an LBR**
 ---
 
 Day by day traffic is increasing on one of the websites managed by the Nautilus production support team. Therefore, the team has observed a degradation in website performance. Following discussions about this issue, the team has decided to deploy this application on a high availability stack i.e on Nautilus infra in Stratos DC. They started the migration last month and it is almost done, as only the LBR server configuration is pending. Configure LBR server as per the information given below:
@@ -1161,7 +1161,7 @@ http {
     }
 }
 ```
-## Day 17: Install and Configure PostgreSQL
+## **Day 17: Install and Configure PostgreSQL**
 ---
 
 The Nautilus application development team has shared that they are planning to deploy one newly developed application on Nautilus infra in Stratos DC. The application uses PostgreSQL database, so as a pre-requisite we need to set up PostgreSQL database server as per requirements shared below:
@@ -1236,7 +1236,7 @@ TO kodekloud_tim;
 \l         -- list databases
 ```
 
-## Day 18: Configure LAMP server
+## **Day 18: Configure LAMP server**
 ---
 xFusionCorp Industries is planning to host a `WordPress` website on their infra in `Stratos Datacenter`. They have already done infrastructure configuration—for example, on the storage server they already have a shared directory `/vaw/www/html` that is mounted on each app host under `/var/www/html` directory. Please perform the following steps to accomplish the task:  
 
@@ -1260,7 +1260,7 @@ sudo systemctl start httpd
 sudo systemctl enable httpd
 ```
 
-#### Verify PHP Installation
+### Verify PHP Installation
 
 ```bash
 php -v
