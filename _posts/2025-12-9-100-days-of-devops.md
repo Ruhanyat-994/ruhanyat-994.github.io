@@ -995,3 +995,168 @@ curl -k https://<app-server-ip>/
 Welcome!
 ```
 
+# Day 16
+---
+
+Day by day traffic is increasing on one of the websites managed by the Nautilus production support team. Therefore, the team has observed a degradation in website performance. Following discussions about this issue, the team has decided to deploy this application on a high availability stack i.e on Nautilus infra in Stratos DC. They started the migration last month and it is almost done, as only the LBR server configuration is pending. Configure LBR server as per the information given below:
+
+- Install `nginx` on `LBR` server
+- Configure load-balancing with the an http context making use of all App Servers. Ensure that you update only the main `Nginx` configuration file located at `/etc/nginx/nginx.conf`
+- Make sure you do not update the apache port that is already defined in the apache configuration on all app servers, also make sure apache server is up and running on all app servers
+- Once done, you can access the website using StaticApp button on the top bar
+
+
+
+## 1. Verify Apache (`httpd`) Service on App Servers
+
+Login to **each app server** and ensure the Apache service is running and listening on the correct port.
+
+```bash
+sudo ss -tlnup
+```
+
+### Sample Output
+
+```text
+Netid   State   Recv-Q  Send-Q  Local Address:Port   Peer Address:Port   Process
+tcp     LISTEN  0       511     0.0.0.0:3000         0.0.0.0:*           users:(("httpd",pid=1690,fd=3))
+tcp     LISTEN  0       128     0.0.0.0:22           0.0.0.0:*           users:(("sshd",pid=1102,fd=3))
+```
+
+ **Apache is running on port:** `3000`
+
+---
+
+## 2. Install and Start NGINX on Load Balancer Server
+
+Login to the **LBR server** and install NGINX.
+
+```bash
+sudo yum install nginx -y
+sudo systemctl enable nginx
+sudo systemctl start nginx
+```
+
+---
+
+## 3. Configure NGINX Load Balancer
+
+Edit the NGINX configuration file:
+
+```bash
+sudo vi /etc/nginx/nginx.conf
+```
+
+### 3.1 Add Upstream Backend Servers
+
+Inside the `http` block (before the `server` block), add:
+
+```nginx
+upstream stapp {
+    server stapp01:3000;
+    server stapp02:3000;
+    server stapp03:3000;
+}
+```
+
+---
+
+### 3.2 Configure Proxy Pass
+
+Inside the `server { listen 80; }` block:
+
+```nginx
+location / {
+    proxy_pass http://stapp;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "upgrade";
+
+    proxy_connect_timeout 5s;
+    proxy_read_timeout 60s;
+}
+```
+
+---
+
+### 3.3 Validate and Restart NGINX
+
+```bash
+sudo nginx -t
+sudo systemctl restart nginx
+```
+
+---
+
+## 4. Full NGINX Load Balancer Configuration
+
+```nginx
+user nginx;
+worker_processes auto;
+error_log /var/log/nginx/error.log;
+pid /run/nginx.pid;
+
+include /usr/share/nginx/modules/*.conf;
+
+events {
+    worker_connections 1024;
+}
+
+http {
+    log_format main '$remote_addr - $remote_user [$time_local] "$request" '
+                    '$status $body_bytes_sent "$http_referer" '
+                    '"$http_user_agent" "$http_x_forwarded_for"';
+
+    access_log /var/log/nginx/access.log main;
+
+    sendfile on;
+    tcp_nopush on;
+    tcp_nodelay on;
+    keepalive_timeout 65;
+    types_hash_max_size 4096;
+
+    include /etc/nginx/mime.types;
+    default_type application/octet-stream;
+    include /etc/nginx/conf.d/*.conf;
+
+    upstream stapp {
+        server stapp01:3000;
+        server stapp02:3000;
+        server stapp03:3000;
+    }
+
+    server {
+        listen 80;
+        listen [::]:80;
+        server_name _;
+
+        include /etc/nginx/default.d/*.conf;
+
+        error_page 404 /404.html;
+        location = /404.html {}
+
+        error_page 500 502 503 504 /50x.html;
+        location = /50x.html {}
+
+        location / {
+            proxy_pass http://stapp;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection "upgrade";
+
+            proxy_connect_timeout 5s;
+            proxy_read_timeout 60s;
+        }
+    }
+}
+```
