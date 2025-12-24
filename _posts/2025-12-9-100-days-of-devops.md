@@ -1365,3 +1365,5 @@ FLUSH PRIVILEGES;
 ```sql
 SHOW GRANTS FOR 'kodekloud_roy'@'%';
 ```
+
+## Day 13
