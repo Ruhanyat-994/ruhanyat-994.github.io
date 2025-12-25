@@ -1366,3 +1366,77 @@ FLUSH PRIVILEGES;
 ```sql
 SHOW GRANTS FOR 'kodekloud_roy'@'%';
 ```
+
+## **Day 19: Install and Configure Web Application**
+---
+xFusionCorp Industries is planning to host two static websites on their infra in `Stratos Datacenter`. The development of these websites is still in-progress, but we want to get the servers ready. Please perform the following steps to accomplish the task:  
+
+a. Install `httpd` package and dependencies on `app server 1`.  
+b. Apache should serve on port `5000`.  
+c. There are two website's backups `/home/thor/news` and `/home/thor/demo` on `jump_host`. Set them up on Apache in a way that `news` should work on the link `http://localhost:5000/news/` and `demo` should work on link `http://localhost:5000/demo/` on the mentioned app server.  
+d. Once configured you should be able to access the website using `curl` command on the respective app server, i.e `curl http://localhost:5000/news/` and `curl http://localhost:5000/demo/`
+### Install Apache (httpd)
+
+```bash
+sudo yum install -y httpd
+sudo systemctl enable httpd
+sudo systemctl start httpd
+```
+### Configure Apache to Listen on Port 5000
+
+Edit Apache configuration:
+
+```bash
+sudo vi /etc/httpd/conf/httpd.conf
+```
+
+Update the listening port:
+
+```apache
+Listen 5000
+```
+
+Restart Apache:
+
+```bash
+sudo systemctl restart httpd
+```
+
+### Copy Website Data from Jump Host (thor)
+
+Direct copying to `/var/www/html` is not permitted, so data is first copied to `/tmp`.
+
+```bash
+scp -r /home/thor/news tony@stapp01.stratos.xfusioncorp.com:/tmp/
+scp -r /home/thor/demo tony@stapp01.stratos.xfusioncorp.com:/tmp/
+```
+
+### Move Website Data to Apache Document Root
+
+Login to the app server and move the files using sudo:
+
+```bash
+ssh tony@stapp01.stratos.xfusioncorp.com
+sudo mv /tmp/news /var/www/html/
+sudo mv /tmp/demo /var/www/html/
+```
+
+### Set Correct Ownership and Permissions
+
+```bash
+sudo chown -R apache:apache /var/www/html/news /var/www/html/demo
+sudo chmod -R 755 /var/www/html/news /var/www/html/demo
+```
+
+Verify:
+
+```bash
+ls -ld /var/www/html/news /var/www/html/demo
+```
+### Verify Website Access Using curl
+
+```bash
+curl http://localhost:5000/news/
+curl http://localhost:5000/demo/
+```
+
