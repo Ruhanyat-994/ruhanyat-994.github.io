@@ -1482,7 +1482,16 @@ Add or update the server block inside `http {}`:
         root         /var/www/html;
 
         # Load configuration files for the default server block.
-        include /etc/nginx/default.d/*.conf;
+        # include /etc/nginx/default.d/*.conf;
+
+        
+        location ~ \.php$ {
+        try_files $uri =404;
+        fastcgi_pass unix:/var/run/php-fpm/default.sock;
+        fastcgi_index index.php;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        include fastcgi_params;
+        }
 
         error_page 404 /404.html;
         location = /404.html {
@@ -1502,17 +1511,10 @@ sudo systemctl restart nginx
 
 ### Install PHP-FPM 8.3
 
-Reset and enable PHP 8.3 module:
-
-```bash
-sudo dnf module reset php -y
-sudo dnf module enable php:8.3 -y
-```
-
 Install PHP and PHP-FPM:
 
 ```bash
-sudo yum install -y php php-fpm
+sudo dnf module install php:8.3 -y
 ```
 ### Configure PHP-FPM Socket
 
@@ -1532,12 +1534,6 @@ Update the following values:
 
 ```ini
 listen = /var/run/php-fpm/default.sock
-listen.owner = nginx
-listen.group = nginx
-listen.mode = 0660
-
-user = nginx
-group = nginx
 ```
 
 ### Set Correct Ownership and Permissions
@@ -1575,4 +1571,6 @@ curl http://stapp01:8097/index.php
 ```bash
 curl http://stapp01:8097/info.php
 ```
+
+### You can check [How to Configure PHP-FPM with NGINX for Secure PHP Processing](https://www.digitalocean.com/community/tutorials/php-fpm-nginx)
 
