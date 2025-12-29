@@ -1605,3 +1605,32 @@ hint:
 hint:   git branch -m <name>
 Initialized empty Git repository in /opt/media.git/
 ```
+
+## **Day 22: Clone Git Repository on Storage Server**
+
+The DevOps team established a new Git repository last week, which remains unused at present. However, the Nautilus application development team now requires a copy of this repository on the `Storage Server` in the Stratos DC. Follow the provided details to clone the repository:  
+  
+1. The repository to be cloned is located at `/opt/cluster.git`  
+
+2. Clone this Git repository to the `/usr/src/kodekloudrepos` directory. Perform this task using the natasha user, and ensure that no modifications are made to the repository or existing directories, such as changing permissions or making unauthorized alterations.
+
+```sh
+thor@jumphost /opt$ ssh natasha@ststor01.stratos.xfusioncorp.com
+
+[natasha@ststor01 ~]$ ls
+[natasha@ststor01 ~]$ ls -ld /usr/src/kodekloudrepos
+drwxr-xr-x 2 natasha natasha 4096 Dec 29 15:55 /usr/src/kodekloudrepos
+[natasha@ststor01 ~]$ git clone /opt/cluster.git/ /usr/src/kodekloudrepos/cluster
+Cloning into '/usr/src/kodekloudrepos/cluster'...
+warning: You appear to have cloned an empty repository.
+done.
+[natasha@ststor01 ~]$ cd /usr/src/kodekloudrepos/cluster
+[natasha@ststor01 cluster]$ git status
+On branch master
+
+No commits yet
+
+nothing to commit (create/copy files and use "git add" to track)
+[natasha@ststor01 cluster]$ 
+
+```
