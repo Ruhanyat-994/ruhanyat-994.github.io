@@ -1440,3 +1440,139 @@ curl http://localhost:5000/news/
 curl http://localhost:5000/demo/
 ```
 
+Here is your **Markdown cheat sheet**, strictly following the **same format and style** you shared 👇
+(Headings, steps, code blocks — all aligned)
+
+---
+
+## **Day 20: Configure Nginx + PHP-FPM Using Unix Sock**
+The Nautilus application development team is planning to launch a new PHP-based application, which they want to deploy on Nautilus infra in Stratos DC. The development team had a meeting with the production support team and they have shared some requirements regarding the infrastructure. Below are the requirements they shared:
+
+a. Install nginx on app server 1 , configure it to use port 8097 and its document root should be /var/www/html.
+b. Install php-fpm version 8.3 on app server 1, it must use the unix socket /var/run/php-fpm/default.sock (create the parent directories if don't exist).
+c. Configure php-fpm and nginx to work together.
+d. Once configured correctly, you can test the website using curl http://stapp01:8097/index.php command from jump host.
+
+NOTE: We have copied two files, index.php and info.php, under /var/www/html as part of the PHP-based application setup. Please do not modify these files.
+
+### Install NGINX
+
+```bash
+sudo yum install -y nginx
+sudo systemctl enable nginx
+sudo systemctl start nginx
+```
+
+
+### Configure NGINX to Listen on Port 8097
+
+Edit nginx configuration:
+
+```bash
+sudo vi /etc/nginx/nginx.conf
+```
+
+Add or update the server block inside `http {}`:
+
+```nginx
+ server {
+        listen       8097;
+        listen       [::]:8097;
+        server_name  _;
+        root         /var/www/html;
+
+        # Load configuration files for the default server block.
+        include /etc/nginx/default.d/*.conf;
+
+        error_page 404 /404.html;
+        location = /404.html {
+        }
+
+        error_page 500 502 503 504 /50x.html;
+        location = /50x.html {
+        }
+    }
+```
+
+Restart nginx:
+
+```bash
+sudo systemctl restart nginx
+```
+
+### Install PHP-FPM 8.3
+
+Reset and enable PHP 8.3 module:
+
+```bash
+sudo dnf module reset php -y
+sudo dnf module enable php:8.3 -y
+```
+
+Install PHP and PHP-FPM:
+
+```bash
+sudo yum install -y php php-fpm
+```
+### Configure PHP-FPM Socket
+
+Create required directory:
+
+```bash
+sudo mkdir -p /var/run/php-fpm
+```
+
+Edit PHP-FPM pool configuration:
+
+```bash
+sudo vi /etc/php-fpm.d/www.conf
+```
+
+Update the following values:
+
+```ini
+listen = /var/run/php-fpm/default.sock
+listen.owner = nginx
+listen.group = nginx
+listen.mode = 0660
+
+user = nginx
+group = nginx
+```
+
+### Set Correct Ownership and Permissions
+
+```bash
+sudo chown -R nginx:nginx /var/www/html
+```
+
+### Start and Enable Services
+
+```bash
+sudo systemctl start php-fpm
+sudo systemctl enable php-fpm
+
+sudo systemctl start nginx
+sudo systemctl enable nginx
+```
+
+Verify service status:
+
+```bash
+systemctl status nginx
+systemctl status php-fpm
+```
+
+
+### Verify Application Using curl (from Jump Host)
+
+```bash
+curl http://stapp01:8097/index.php
+```
+
+(Optional test)
+
+```bash
+curl http://stapp01:8097/info.php
+```
+
