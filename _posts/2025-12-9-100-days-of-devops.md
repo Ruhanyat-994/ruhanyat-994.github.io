@@ -1574,3 +1574,34 @@ curl http://stapp01:8097/info.php
 
 ### You can check [How to Configure PHP-FPM with NGINX for Secure PHP Processing](https://www.digitalocean.com/community/tutorials/php-fpm-nginx)
 
+
+## **Day 21: Set Up Git Repository on Storage Server**
+
+The Nautilus development team has provided requirements to the DevOps team for a new application development project, specifically requesting the establishment of a Git repository. Follow the instructions below to create the Git repository on the `Storage server` in the Stratos DC:  
+
+1. Utilize `yum` to install the `git` package on the `Storage Server`.  
+      
+2. Create a bare repository named `/opt/media.git` (ensure exact name usage).
+
+
+```sh
+[natasha@ststor01 ~]$ sudo yum install git 
+
+[natasha@ststor01 ~]$ git -h | grep bare
+           [--no-optional-locks] [--no-advice] [--bare] [--git-dir=<path>]
+[natasha@ststor01 ~]$ git init --bare /opt/media.git
+fatal: cannot mkdir /opt/media.git: Permission denied
+
+[natasha@ststor01 ~]$ sudo git init --bare /opt/media.git
+hint: Using 'master' as the name for the initial branch. This default branch name
+hint: is subject to change. To configure the initial branch name to use in all
+hint: of your new repositories, which will suppress this warning, call:
+hint:
+hint:   git config --global init.defaultBranch <name>
+hint:
+hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+hint: 'development'. The just-created branch can be renamed via this command:
+hint:
+hint:   git branch -m <name>
+Initialized empty Git repository in /opt/media.git/
+```
