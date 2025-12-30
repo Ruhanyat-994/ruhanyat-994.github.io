@@ -1645,3 +1645,22 @@ There is a Git server utilized by the Nautilus project teams. Recently, a new de
 `Note:` For tasks requiring web UI changes, screenshots are necessary for review purposes. Additionally, consider utilizing screen recording software such as loom.com to record and share your task completion process.
 
 ### Just go to the git repo and fork it to your account
+
+## **Day 24: Git Create Branches**
+
+Nautilus developers are actively working on one of the project repositories, `/usr/src/kodekloudrepos/beta`. Recently, they decided to implement some new features in the application, and they want to maintain those new changes in a separate branch. Below are the requirements that have been shared with the DevOps team:
+
+- On Storage server in Stratos DC create a new branch `xfusioncorp_beta` from master branch in `/usr/src/kodekloudrepos/beta` git repo.
+
+- Please do not try to make any changes in the code.
+
+```sh
+cd /usr/src/kodekloudrepos/beta/
+ls
+git branch
+sudo su
+git branch
+git switch master
+git branch xfusioncorp_beta
+git branch
+```
