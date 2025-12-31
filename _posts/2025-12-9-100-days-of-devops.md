@@ -1664,3 +1664,75 @@ git switch master
 git branch xfusioncorp_beta
 git branch
 ```
+## **Day 25: Git Merge Branches**
+
+The Nautilus application development team has been working on a project repository `/opt/cluster.git`. This repo is cloned at `/usr/src/kodekloudrepos` on `storage server` in `Stratos DC`. They recently shared the following requirements with DevOps team:  
+Create a new branch `nautilus` in `/usr/src/kodekloudrepos/cluster` repo from `master` and copy the `/tmp/index.html` file (present on `storage server` itself) into the repo. Further, `add/commit` this file in the new branch and merge back that branch into `master` branch. Finally, push the changes to the origin for both of the branches.
+
+### Check Existing Branches
+
+```bash
+git branch
+```
+Only the `master` branch exists, and it is currently checked out.
+
+### Create a New Branch
+
+```bash
+git branch nautilus
+```
+A new branch named `nautilus` is created from `master`.
+
+### Switch to the New Branch
+
+```bash
+git checkout nautilus
+```
+You are now working on the `nautilus` branch.
+
+### Copy Required File into Repository
+
+```bash
+cp /tmp/index.html .
+```
+The file is copied into the repository root.
+
+### Verify Files in Repository
+
+```bash
+ls
+```
+`index.html` is now present in the repo.
+
+### Stage Changes
+
+```bash
+git add .
+```
+All changes (including `index.html`) are staged.
+
+### Commit Changes in Nautilus Branch
+
+```bash
+git commit -m "adding file"
+```
+The file is successfully committed to the `nautilus` branch.
+
+
+### Switch Back to Master Branch
+
+```bash
+git checkout master
+```
+You are now back on `master`.
+
+### Merge Nautilus Branch into Master
+```bash
+git merge nautilus
+```
+The `nautilus` branch changes are merged into `master` using a **fast-forward merge**.
+### Push Master Branch to Origin
+
+```bash
+git push 
+```
