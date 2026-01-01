@@ -1736,3 +1736,61 @@ The `nautilus` branch changes are merged into `master` using a **fast-forward me
 ```bash
 git push 
 ```
+
+
+## **Day 26: Git Manage Remotes**
+
+The xFusionCorp development team added updates to the project that is maintained under `/opt/official.git` repo and cloned under `/usr/src/kodekloudrepos/official`. Recently some changes were made on Git server that is hosted on `Storage server` in `Stratos DC`. The DevOps team added some new Git remotes, so we need to update remote on `/usr/src/kodekloudrepos/official` repository as per details mentioned below:
+a. In `/usr/src/kodekloudrepos/official` repo add a new remote `dev_official` and point it to `/opt/xfusioncorp_official.git` repository.
+b. There is a file `/tmp/index.html` on same server; copy this file to the repo and add/commit to master branch.  
+c. Finally push `master` branch to this new remote origin.
+
+### Check Existing Git Remotes
+
+```bash
+git remote -v
+```
+
+### Add New Remote Repository
+
+```bash
+git remote add dev_official /opt/xfusioncorp_official.git
+```
+### Verify Remote Was Added
+
+```bash
+git remote -v
+```
+
+### Copy File Into Repository
+
+```bash
+cp /tmp/index.html .
+```
+### Stage Changes
+
+```bash
+git add .
+```
+### Commit Changes to Master Branch
+
+```bash
+git commit -m "adding file"
+```
+### Check Current Branch
+
+```bash
+git branch
+```
+
+### Push Master Branch to New Remote
+
+```bash
+git push dev_official master
+```
+### Quick Tip
+* Always **explicitly specify the branch** when pushing to a new remote:
+
+```bash
+git push <remote-name> <branch-name>
+```
