@@ -1794,3 +1794,74 @@ git push dev_official master
 ```bash
 git push <remote-name> <branch-name>
 ```
+
+## **Day 27: Git Revert Some Changes**
+
+The Nautilus application development team was working on a git repository `/usr/src/kodekloudrepos/apps` present on Storage server in Stratos DC. However, they reported an issue with the recent commits being pushed to this repo. They have asked the DevOps team to revert repo HEAD to last commit. Below are more details about the task:
+
+In `/usr/src/kodekloudrepos/apps` git repository, revert the latest commit ( HEAD ) to the previous commit .
+Use `revert apps` message (please use all small letters for commit message) for the new revert commit.
+
+    
+### Navigate to Repository
+
+```bash
+cd /usr/src/kodekloudrepos/apps
+```
+### Check Current Commit History
+
+```bash
+git log --oneline
+```
+
+* Shows commit hash, HEAD, and messages.
+  Example output:
+
+```
+269aa04 (HEAD -> master) add data.txt file
+3d81254 initial commit
+```
+### Revert the Latest Commit
+
+```bash
+git revert HEAD
+```
+
+* Creates a **new commit** that undoes the changes of the latest commit.
+* Safe for shared repositories since it **preserves history**.
+
+### Change Revert Commit Message
+
+If you want a custom message instead of the default `Revert "..."`:
+
+```bash
+git commit --amend -m "revert apps"
+```
+
+* Updates the last commit message.
+* Example after amend:
+
+```
+111d333 (HEAD -> master) revert apps
+269aa04 add data.txt file
+3d81254 initial commit
+```
+
+### Verify Revert
+
+```bash
+git log --oneline
+```
+* Confirms the latest commit is your **revert commit**.
+
+```bash
+git status
+```
+* Ensures working directory is clean.
+
+### Notes / Tips
+
+* **Do NOT use `-m` option** for normal commits; it’s only for **merge commits**.
+* Use `git revert` instead of `git reset` if others are working on the repo.
+* If there are untracked files, Git will show them under `git status`, but they do **not affect the revert**.
+
