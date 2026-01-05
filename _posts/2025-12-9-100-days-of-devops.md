@@ -1865,3 +1865,79 @@ git status
 * Use `git revert` instead of `git reset` if others are working on the repo.
 * If there are untracked files, Git will show them under `git status`, but they do **not affect the revert**.
 
+## **Day 28: **
+
+The Nautilus application development team has been working on a project repository `/opt/games.git`. This repo is cloned at `/usr/src/kodekloudrepos` on `storage server` in `Stratos DC`. They recently shared the following requirements with the DevOps team:  
+
+There are two branches in this repository, `master` and `feature`. One of the developers is working on the `feature` branch and their work is still in progress, however they want to merge one of the commits from the `feature` branch to the `master` branch, the message for the commit that needs to be merged into `master` is `Update info.txt`. Accomplish this task for them, also remember to push your changes eventually.
+
+### Repository Location
+
+* Remote repo: `/opt/games.git`
+* Local clone: `/usr/src/kodekloudrepos/games`
+
+### Step 1: Navigate to the Repository
+
+```bash
+cd /usr/src/kodekloudrepos/games
+```
+### Step 2: Check Available Branches
+
+```bash
+git branch
+```
+### Step 3: Identify the Required Commit
+
+List commits on the `feature` branch:
+
+```bash
+git log feature --oneline
+```
+
+Look for the commit message:
+
+```text
+Update info.txt
+```
+
+Copy the commit hash:
+
+```text
+d6a24a9ab99c93bc1420434dd6ea28ae997a0763
+```
+### Step 4: Switch to Master Branch
+
+```bash
+git checkout master
+```
+### Step 5: Cherry-Pick the Commit
+
+```bash
+git cherry-pick d6a24a9ab99c93bc1420434dd6ea28ae997a0763
+```
+
+Successful output indicates the commit is applied:
+
+```text
+[master <new-hash>] Update info.txt
+```
+
+
+### Step 6: Verify Repository Status
+
+```bash
+git status
+```
+
+Expected output:
+
+```text
+Your branch is ahead of 'origin/master' by 1 commit
+nothing to commit, working tree clean
+```
+### Step 7: Push Changes to Remote
+
+```bash
+git push origin master
+```
+
