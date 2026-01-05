@@ -1865,7 +1865,7 @@ git status
 * Use `git revert` instead of `git reset` if others are working on the repo.
 * If there are untracked files, Git will show them under `git status`, but they do **not affect the revert**.
 
-## **Day 28: **
+## **Day 28: Git Cherry Pick**
 
 The Nautilus application development team has been working on a project repository `/opt/games.git`. This repo is cloned at `/usr/src/kodekloudrepos` on `storage server` in `Stratos DC`. They recently shared the following requirements with the DevOps team:  
 
