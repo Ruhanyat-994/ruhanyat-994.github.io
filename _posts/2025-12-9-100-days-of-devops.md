@@ -2025,3 +2025,50 @@ Great stuff!! The story has been merged! 👏
     PR REVIEW & MERGING
   </figcaption>
 </figure>
+
+
+
+## **Day 30: Git hard reset**
+
+The Nautilus application development team was working on a git repository `/usr/src/kodekloudrepos/official` present on `Storage server` in `Stratos DC`. This was just a test repository and one of the developers just pushed a couple of changes for testing, but now they want to clean this repository along with the commit history/work tree, so they want to point back the `HEAD` and the branch itself to a commit with message `add data.txt file`. Find below more details:  
+
+1. In `/usr/src/kodekloudrepos/official` git repository, reset the git commit history so that there are only two commits in the commit history i.e `initial commit` and `add data.txt file`.  
+2. Also make sure to push your changes.
+
+
+### Navigate to repository directory
+
+```bash
+cd /usr/src/kodekloudrepos/official
+```
+
+### Check repository status
+
+```bash
+git status
+```
+
+### View commit history (one line format)
+
+```bash
+git log --oneline
+```
+
+### Reset branch to specific commit (remove newer commits)
+
+```bash
+git reset --hard a34829d
+```
+
+### Verify commit history after reset
+
+```bash
+git log --oneline
+```
+
+### Force push changes to remote repository
+
+```bash
+git push origin master --force
+```
+
