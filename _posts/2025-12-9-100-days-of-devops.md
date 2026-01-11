@@ -2073,3 +2073,84 @@ git log --oneline
 git push origin master --force
 ```
 
+## **Day 31: Git Stash**
+
+The Nautilus application development team was working on a git repository `/usr/src/kodekloudrepos/blog` present on `Storage server` in `Stratos DC`. One of the developers stashed some in-progress changes in this repository, but now they want to restore some of the stashed changes. Find below more details to accomplish this task:  
+  
+Look for the stashed changes under `/usr/src/kodekloudrepos/blog` git repository, and restore the stash with `stash@{1}` identifier. Further, commit and push your changes to the origin.
+
+### Git Stash Theory
+
+<figure style="max-width:720px; margin:0 auto; text-align:center;">
+  <img src="../assets/Images/Git_Stash.png"
+       alt="Git Stash"
+       style="width:100%; max-width:720px; display:block; margin:0 auto;
+              border-radius:18px; box-shadow:0 8px 24px rgba(0,0,0,0.12);
+              border:1px solid rgba(0,0,0,0.06); object-fit:cover;" />
+  <figcaption style="font-size:0.9rem; color:var(--text-muted,#666); margin-top:8px;">
+    Git Stash 
+  </figcaption>
+</figure>
+
+
+### Check repository status
+
+```bash
+git status
+```
+
+### Check current branch
+
+```bash
+git branch
+```
+
+### View commit history
+
+```bash
+git log --oneline
+```
+
+### List available stashes
+
+```bash
+git stash list
+```
+
+**Example output:**
+
+```text
+stash@{0}: WIP on master: ba196f3 initial commit
+stash@{1}: WIP on master: ba196f3 initial commit
+```
+
+### Apply a specific stash (stash@{1})
+
+```bash
+git stash apply stash@{1}
+```
+
+### Verify restored changes
+
+```bash
+git status
+```
+
+### Stage all changes
+
+```bash
+git add .
+```
+
+### Commit restored stash changes
+
+```bash
+git commit -m "added welcome.txt from stash@{1}"
+```
+
+### Push changes to remote (correct branch)
+
+```bash
+git push origin master
+```
+
