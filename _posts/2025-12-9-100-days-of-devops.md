@@ -2056,6 +2056,7 @@ git log --oneline
 
 ### Reset branch to specific commit (remove newer commits)
 
+*This is will remove all the commits till a34829d and move the HEAD to a34829d commit*
 ```bash
 git reset --hard a34829d
 ```
