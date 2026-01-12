@@ -2154,3 +2154,81 @@ git commit -m "added welcome.txt from stash@{1}"
 git push origin master
 ```
 
+## **Day 32: Git Rebase**
+
+The Nautilus application development team has been working on a project repository `/opt/beta.git`. This repo is cloned at `/usr/src/kodekloudrepos` on `storage server` in `Stratos DC`. They recently shared the following requirements with DevOps team:  
+
+One of the developers is working on `feature` branch and their work is still in progress, however there are some changes which have been pushed into the `master` branch, the developer now wants to `rebase` the `feature` branch with the `master` branch without loosing any data from the `feature` branch, also they don't want to add any `merge commit` by simply merging the `master` branch into the `feature` branch. Accomplish this task as per requirements mentioned.  
+Also remember to push your changes once done.
+
+<figure style="max-width:720px; margin:0 auto; text-align:center;">
+  <img src="../assets/Images/GIT_rebase.png"
+       alt="Git Rebase"
+       style="width:100%; max-width:720px; display:block; margin:0 auto;
+              border-radius:18px; box-shadow:0 8px 24px rgba(0,0,0,0.12);
+              border:1px solid rgba(0,0,0,0.06); object-fit:cover;" />
+  <figcaption style="font-size:0.9rem; color:var(--text-muted,#666); margin-top:8px;">
+    Git Rebase
+  </figcaption>
+</figure>
+
+### Check repository status
+
+```bash
+git status
+```
+
+### View commit history
+
+```bash
+git log --oneline
+```
+
+### List all branches
+
+```bash
+git branch
+```
+
+### Switch to master branch
+
+```bash
+git checkout master
+```
+
+### Fetch latest changes from remote
+
+```bash
+git fetch origin
+```
+
+### Switch to feature branch
+
+```bash
+git checkout feature
+```
+
+### Rebase feature branch onto master
+
+```bash
+git rebase origin/master
+```
+
+### Resolve conflicts (if any)
+
+```bash
+git add .
+git rebase --continue
+```
+
+### Push rebased feature branch to remote (history rewritten)
+
+```bash
+git push origin feature --force
+```
+
+### View commit graph for verification
+
+```bash
+git log --oneline --graph --decorate --all
+```
