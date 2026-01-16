@@ -2327,3 +2327,112 @@ Date:   Fri Jan 16 09:57:41 2026 +0000
 
     Fix typo in story title
 ```
+
+## **Day 34: Git Hook**
+
+The Nautilus application development team was working on a git repository `/opt/news.git` which is cloned under `/usr/src/kodekloudrepos` directory present on `Storage server` in `Stratos DC`. The team want to setup a hook on this repository, please find below more details:  
+
+- Merge the `feature` branch into the `master` branch, but before pushing your changes complete below point.  
+- Create a `post-update` hook in this git repository so that whenever any changes are pushed to the `master` branch, it creates a release tag with name `release-2023-06-15`, where `2023-06-15` is supposed to be the current date. For example if today is `20th June, 2023` then the release tag must be `release-2023-06-20`. Make sure you test the hook at least once and create a release tag for today's release.  
+- Finally remember to push your changes.  
+    `Note:` Perform this task using the `natasha` user, and ensure the repository or existing directory permissions are not altered.
+
+<figure style="max-width:720px; margin:0 auto; text-align:center;">
+  <img src="../assets/Images/git_hook.png"
+       alt="Git Hook"
+       style="width:100%; max-width:720px; display:block; margin:0 auto;
+              border-radius:18px; box-shadow:0 8px 24px rgba(0,0,0,0.12);
+              border:1px solid rgba(0,0,0,0.06); object-fit:cover;" />
+  <figcaption style="font-size:0.9rem; color:var(--text-muted,#666); margin-top:8px;">
+    Git Hook
+  </figcaption>
+</figure>
+
+### 1. Navigate to working repository
+
+```bash
+cd /usr/src/kodekloudrepos/news
+```
+
+Checked repository status and branches:
+
+```bash
+git status
+git branch
+```
+
+### 2. Merge feature branch into master
+
+```bash
+git checkout master
+git merge feature
+```
+
+### 3. Create post-update hook in bare repository
+
+Navigate to hooks directory:
+
+```bash
+cd /opt/news.git/hooks
+ls
+```
+
+Create hook file:
+
+```bash
+vi post-update
+```
+
+Hook content:
+
+```bash
+#!/bin/bash
+
+refname="$1"
+
+if [[ "$refname" == "refs/heads/master" ]]; then
+    DATE=$(date +%Y-%m-%d)
+    TAG="release-$DATE"
+    git tag -f "$TAG"
+fi
+```
+
+Make executable:
+
+```bash
+chmod +x post-update
+```
+
+---
+
+### 4. Push changes to trigger hook
+
+```bash
+cd /usr/src/kodekloudrepos/news
+git push origin master
+```
+
+Push output:
+
+```text
+To /opt/news.git
+   38f6832..279d796  master -> master
+```
+
+---
+
+### 5. Verify release tag creation
+
+```bash
+cd /opt/news.git
+git tag
+```
+
+Result:
+
+```text
+release-2026-01-16
+```
+
+(The date reflects the current system date.)
+
