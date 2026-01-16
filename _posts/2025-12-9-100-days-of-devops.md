@@ -2436,3 +2436,65 @@ release-2026-01-16
 
 (The date reflects the current system date.)
 
+## **Day 35: Install Docker Packages and Start Docker Service**
+
+The Nautilus DevOps team aims to containerize various applications following a recent meeting with the application development team. They intend to conduct testing with the following steps:
+1. Install `docker-ce` and `docker compose` packages on `App Server 1`.  
+2. Initiate the `docker` service.
+
+<figure style="max-width:720px; margin:0 auto; text-align:center;">
+  <img src="../assets/Images/Docker.png"
+       alt="Docker"
+       style="width:100%; max-width:720px; display:block; margin:0 auto;
+              border-radius:18px; box-shadow:0 8px 24px rgba(0,0,0,0.12);
+              border:1px solid rgba(0,0,0,0.06); object-fit:cover;" />
+  <figcaption style="font-size:0.9rem; color:var(--text-muted,#666); margin-top:8px;">
+    Docker
+  </figcaption>
+</figure>
+
+
+### System Information
+
+The operating system details were verified using:
+
+```bash
+cat /etc/os-release
+```
+
+### 1. Install required dependencies
+
+```bash
+sudo yum install -y yum-utils device-mapper-persistent-data lvm2
+```
+### 2. Add Docker official repository
+
+```bash
+sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+```
+
+### 3. Install Docker CE and Docker Compose packages
+
+```bash
+sudo yum install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
+```
+
+Installed components:
+
+* docker-ce
+* docker-ce-cli
+* containerd.io
+* docker-buildx-plugin
+* docker-compose-plugin
+
+### 4. Enable and start Docker service
+
+```bash
+sudo systemctl enable --now docker
+```
+
+### 5. Verify Docker installation
+
+```bash
+sudo docker run hello-world
+```
