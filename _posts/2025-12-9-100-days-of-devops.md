@@ -2232,3 +2232,98 @@ git push origin feature --force
 ```bash
 git log --oneline --graph --decorate --all
 ```
+
+## **Day 33: Resolve Git Merge Conflicts**
+
+Sarah and Max were working on writting some stories which they have pushed to the repository. Max has recently added some new changes and is trying to push them to the repository but he is facing some issues. Below you can find more details:
+
+SSH into `storage server` using user `max` and password `Max_pass123`. Under `/home/max` you will find the `story-blog` repository. Try to push the changes to the origin repo and fix the issues. The `story-index.txt` must have titles for all 4 stories. Additionally, there is a typo in `The Lion and the Mooose` line where `Mooose` should be `Mouse`.  
+  
+Click on the `Gitea UI` button on the top bar. You should be able to access the `Gitea` page. You can login to `Gitea` server from UI using username `sarah` and password `Sarah_pass123` or username `max` and password `Max_pass123`.  
+  
+`Note:` For these kind of scenarios requiring changes to be done in a web UI, please take screenshots so that you can share it with us for review in case your task is marked incomplete. You may also consider using a screen recording software such as loom.com to record and share your work.
+
+### 1. Repository Access
+
+* Logged into the storage server as user `max`
+* Navigated to: `/home/max/story-blog`
+
+### 2. Pulled Latest Changes
+
+```bash
+git pull origin master
+```
+
+### 3. Fixed Issues
+
+#### Corrected Typo
+
+Updated the story file:
+
+> The Lion and the **Mooose** → The Lion and the **Mouse**
+
+#### Remove the merge conflicts as well!
+
+### 4. Configured Git Identity
+
+```bash
+git config user.name max
+git config user.email max@ststor01.stratos.xfusioncorp.com
+```
+
+### 5. Committed Changes
+
+```bash
+git add .
+git commit -m "fix: change spelling moose to mouse"
+```
+
+### 6. Pushed to Remote Repository
+
+```bash
+git push origin master
+```
+
+## Git Log Verification (Logs Answer)
+
+Output of `git log` after successful operations:
+
+```text
+commit b8b703b0b4359617e43a1183c547f7308affe825
+Merge: 0d395c7 75817c8
+Author: Linux User <max@ststor01.stratos.xfusioncorp.com>
+Date:   Fri Jan 16 10:07:56 2026 +0000
+
+    fix: change spelling moose to mouse
+
+commit 0d395c7d2a03d571e49bae826788e33642ad613f
+Author: Linux User <max@ststor01.stratos.xfusioncorp.com>
+Date:   Fri Jan 16 10:02:29 2026 +0000
+
+    fix: change spelling moose to mouse
+
+commit 909511f4f2c0ad20cfcc4db3e021eb071e7a30aa
+Author: Linux User <max@ststor01.stratos.xfusioncorp.com>
+Date:   Fri Jan 16 09:57:43 2026 +0000
+
+    Added the fox and grapes story
+
+commit 75817c899d762226d3481a1c68a9fdaafda9c77f
+Author: sarah <sarah@stratos.xfusioncorp.com>
+Date:   Fri Jan 16 09:57:42 2026 +0000
+
+    Added Index
+
+commit a15185df863df6826ec9e1009e8c4fdcd9605738
+Merge: 8a9a036 bb0aee5
+Author: sarah <sarah@stratos.xfusioncorp.com>
+Date:   Fri Jan 16 09:57:41 2026 +0000
+
+    Merge branch 'story/frogs-and-ox'
+
+commit 8a9a03604b24f08560601b4f7d83013ff8e87689
+Author: sarah <sarah@stratos.xfusioncorp.com>
+Date:   Fri Jan 16 09:57:41 2026 +0000
+
+    Fix typo in story title
+```
