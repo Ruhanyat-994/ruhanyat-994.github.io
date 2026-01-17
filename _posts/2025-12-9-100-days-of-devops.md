@@ -2498,3 +2498,55 @@ sudo systemctl enable --now docker
 ```bash
 sudo docker run hello-world
 ```
+
+## **Day 36: Deploy Nginx Container on Application Server**
+
+The Nautilus DevOps team is conducting application deployment tests on selected application servers. They require a nginx container deployment on `Application Server 3`. Complete the task with the following instructions:
+1. On `Application Server 3` create a container named `nginx_3` using the `nginx` image with the `alpine` tag. Ensure container is in a `running` state.
+
+### Steps Performed
+
+1. Ran the Docker container with the required name and image:
+
+   ```bash
+   docker run -d --name nginx_3 nginx:alpine
+   ```
+
+2. Verified the container status:
+
+   ```bash
+   docker ps
+   ```
+
+## **Day 37: Copy File to Docker Container**
+
+The Nautilus DevOps team possesses confidential data on `App Server 3` in the `Stratos Datacenter`. A container named `ubuntu_latest` is running on the same server.  
+Copy an encrypted file `/tmp/nautilus.txt.gpg` from the docker host to the `ubuntu_latest` container located at `/opt/`. Ensure the file is not modified during this operation.
+
+
+### Steps Performed
+
+#### Checking Docker Name
+
+```sh
+docker ps
+```
+
+1. Copy the encrypted file from the host to the container:
+
+   ```bash
+   docker cp /tmp/nautilus.txt.gpg ubuntu_latest:/opt/
+   ```
+
+2. Access the container to verify the file:
+
+   ```bash
+   docker exec -it ubuntu_latest bash
+   ```
+
+3. Navigate to the destination directory and confirm the file exists:
+
+   ```bash
+   cd /opt
+   ls
+   ```
