@@ -2550,3 +2550,29 @@ docker ps
    cd /opt
    ls
    ```
+
+## **Day 38: Pull Docker Image**
+
+Nautilus project developers are planning to start testing on a new project. As per their meeting with the DevOps team, they want to test containerized environment application features. As per details shared with DevOps team, we need to accomplish the following task:
+a. Pull `busybox:musl` image on `App Server 2` in Stratos DC and re-tag (create new tag) this image as `busybox:blog`.
+
+### Steps Performed
+
+1. Pulled the BusyBox image with the `musl` tag:
+
+```sh
+docker pull busybox:musl
+```
+
+2. Created a new tag named `busybox:blog` from the pulled image:
+
+```sh
+docker tag busybox:musl busybox:blog
+```
+
+3. Verified the images:
+
+```sh
+docker images | grep busybox
+```
+
