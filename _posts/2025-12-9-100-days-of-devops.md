@@ -2576,3 +2576,27 @@ docker tag busybox:musl busybox:blog
 docker images | grep busybox
 ```
 
+## **Day 39: Create a Docker Image From Container**
+
+One of the Nautilus developer was working to test new changes on a container. He wants to keep a backup of his changes to the container. A new request has been raised for the DevOps team to create a new image from this container. Below are more details about it:
+a. Create an image `beta:devops` on `Application Server 2` from a container `ubuntu_latest` that is running on same server.
+
+### Steps Performed
+
+1. Verified that the container is running:
+
+```sh
+docker ps | grep ubuntu_latest
+```
+
+2. Created a new image from the running container:
+
+```sh
+docker commit ubuntu_latest beta:devops
+```
+
+3. Verified the new image:
+
+```sh
+docker images | grep beta
+```
