@@ -2600,3 +2600,50 @@ docker commit ubuntu_latest beta:devops
 ```sh
 docker images | grep beta
 ```
+
+## **Day 40: Docker EXEC Operations**
+
+One of the Nautilus DevOps team members was working to configure services on a `kkloud` container that is running on `App Server 3` in `Stratos Datacenter`. Due to some personal work he is on PTO for the rest of the week, but we need to finish his pending work ASAP. Please complete the remaining work as per details given below:
+
+a. Install `apache2` in `kkloud` container using `apt` that is running on `App Server 3` in `Stratos Datacenter`.  
+b. Configure Apache to listen on port `6200` instead of default `http` port. Do not bind it to listen on specific IP or hostname only, i.e it should listen on localhost, 127.0.0.1, container ip, etc.  
+c. Make sure Apache service is up and running inside the container. Keep the container in running state at the end.
+### Steps Performed
+
+1. Accessed the running container:
+
+```command
+docker exec -it kkloud bash
+```
+
+2. Updated the package index and installed Apache2:
+
+```command
+apt install -y apache2
+```
+
+3. Configured Apache to listen on port 6200:
+
+```command
+sed -i 's/Listen 80/Listen 6200/' /etc/apache2/ports.conf
+```
+- Vim is not downloaded 
+
+4. Restarted Apache service to apply changes:
+
+```command
+service apache2 restart
+```
+
+5. Verified that Apache is running and listening on the new port:
+
+```command
+service apache2 status
+```
+
+6. Exited the container, keeping it in running state:
+
+```command
+exit
+docker ps 
+```
