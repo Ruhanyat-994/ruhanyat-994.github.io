@@ -2725,3 +2725,52 @@ NETWORK ID     NAME      DRIVER    SCOPE
 
 *I find docker documentation is the best guide for docker network*
 - [Docker Docs for Networking](https://docs.docker.com/engine/network/)
+
+
+## **Day 43: Docker Ports Mapping** 
+
+The Nautilus DevOps team is planning to host an application on a nginx-based container. There are number of tickets already been created for similar tasks. One of the tickets has been assigned to set up a nginx container on `Application Server 3` in `Stratos Datacenter`. Please perform the task as per details mentioned below:
+
+a. Pull `nginx:stable` docker image on `Application Server 3`.  
+b. Create a container named `demo` using the image you pulled.  
+c. Map host port `6300` to container port `80`. Please keep the container in running state.
+
+### Step 1: Pull the NGINX Stable Image
+
+```bash
+docker pull nginx:stable
+```
+
+The `nginx:stable` image was pulled from Docker Hub to ensure a reliable and production-ready version of NGINX is available locally on the server.
+
+
+### Step 2: Create and Run the Container
+
+```bash
+docker run -d --name demo -p 6300:80 nginx:stable
+```
+
+A container named **demo** was created and started in detached mode using the pulled image.
+The host port **6300** was mapped to container port **80**, allowing external access to the NGINX web service.
+
+
+### Step 3: Verify Container Status
+
+```bash
+docker ps
+```
+This command was used to confirm that the `demo` container is running successfully and that the port mapping is active.
+
+```sh
+CONTAINER ID   IMAGE          COMMAND                  CREATED         STATUS        PORTS                  NAMES
+f738f0094168   nginx:stable   "/docker-entrypoint.…"   3 seconds ago   Up 1 second   0.0.0.0:6300->80/tcp   demo
+```
+
+
+### Step 4: Validate NGINX Service Accessibility
+
+```bash
+curl http://localhost:6300
+```
+
+The command returned the default **NGINX welcome page**, verifying that the web server is running correctly and accessible through the mapped port.
