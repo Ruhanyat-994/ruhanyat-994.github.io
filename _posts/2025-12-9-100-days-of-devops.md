@@ -2685,3 +2685,43 @@ CMD ["apachectl", "-D", "FOREGROUND"]
 ```sh
 docker build -t nautilus-app-image:latest .
 ```
+
+## **Day 42: Create a Docker Network**
+
+The Nautilus DevOps team needs to set up several docker environments for different applications. One of the team members has been assigned a ticket where he has been asked to create some docker networks to be used later. Complete the task based on the following ticket description:
+
+a. Create a docker network named as `media` on App Server `3` in `Stratos DC`.  
+b. Configure it to use `bridge` drivers.  
+c. Set it to use subnet `10.10.1.0/24` and iprange `10.10.1.0/24`.
+
+### Steps Performed
+
+```sh
+[root@stapp03 banner]# docker network create --driver bridge --subnet 10.10.1.0/24 --ip-range 10.10.1.0/24 media       
+1a0b4591d6d61da07c3dfgdf3454356732ff63d540bcb27fghtryt756765ea
+[root@stapp03 banner]# docker network
+
+Usage:  docker network COMMAND
+
+Manage networks
+
+Commands:
+  connect     Connect a container to a network
+  create      Create a network
+  disconnect  Disconnect a container from a network
+  inspect     Display detailed information on one or more networks
+  ls          List networks
+  prune       Remove all unused networks
+  rm          Remove one or more networks
+
+Run 'docker network COMMAND --help' for more information on a command.
+[root@stapp03 banner]# docker network ls
+NETWORK ID     NAME      DRIVER    SCOPE
+0c0f46f7bc87   bridge    bridge    local
+33d05cba4099   host      host      local
+1a0b4591d6d6   media     bridge    local
+6f6dc1599b7e   none      null      local
+```
+
+*I find docker documentation is the best guide for docker network*
+- [Docker Docs for Networking](https://docs.docker.com/engine/network/)
