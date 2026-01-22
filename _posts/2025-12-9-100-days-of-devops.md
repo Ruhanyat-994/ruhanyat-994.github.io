@@ -2774,3 +2774,81 @@ curl http://localhost:6300
 ```
 
 The command returned the default **NGINX welcome page**, verifying that the web server is running correctly and accessible through the mapped port.
+
+## **Day 44: Write a Docker Compose File**
+
+The Nautilus application development team shared static website content that needs to be hosted on the `httpd` web server using a containerised platform. The team has shared details with the DevOps team, and we need to set up an environment according to those guidelines. Below are the details:  
+
+a. On `App Server 1` in `Stratos DC` create a container named `httpd` using a docker compose file `/opt/docker/docker-compose.yml` (please use the exact name for file).  
+b. Use `httpd` (preferably `latest` tag) image for container and make sure container is named as `httpd`; you can use any name for service.  
+c. Map `80` number port of container with port `8085` of docker host.  
+d. Map container's `/usr/local/apache2/htdocs` volume with `/opt/security` volume of docker host which is already there. (please do not modify any data within these locations).
+
+### Docker Compose Configuration
+
+The following Docker Compose file was created at the exact required path:
+
+`/opt/docker/docker-compose.yml`
+
+```yaml
+version: "3.8"
+
+services:
+  web:
+    image: httpd:latest
+    container_name: httpd
+    ports:
+      - "8085:80"
+    volumes:
+      - /opt/security:/usr/local/apache2/htdocs
+```
+
+---
+
+### Deployment Steps
+
+1. Navigated to the Docker directory:
+
+   ```bash
+   cd /opt/docker/
+   ```
+
+2. Created and saved the `docker-compose.yml` file with the configuration shown above.
+
+3. Started the container in detached mode:
+
+   ```bash
+   docker compose up -d
+   ```
+
+4. Verified that the container is running:
+
+   ```bash
+   docker ps
+   ```
+
+---
+
+### Verification
+
+The web service was tested using `curl`:
+
+```bash
+curl http://172.16.238.10:8085
+```
+
+The response confirmed that the static content from `/opt/security` is being served correctly:
+
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+ <head>
+  <title>Index of /</title>
+ </head>
+ <body>
+<h1>Index of /</h1>
+<ul><li><a href="index1.html"> index1.html</a></li>
+</ul>
+</body></html>
+```
+
