@@ -2436,12 +2436,6 @@ release-2026-01-16
 
 (The date reflects the current system date.)
 
-## **Day 35: Install Docker Packages and Start Docker Service**
-
-The Nautilus DevOps team aims to containerize various applications following a recent meeting with the application development team. They intend to conduct testing with the following steps:
-1. Install `docker-ce` and `docker compose` packages on `App Server 1`.  
-2. Initiate the `docker` service.
-
 <figure style="max-width:720px; margin:0 auto; text-align:center;">
   <img src="../assets/Images/Docker.png"
        alt="Docker"
@@ -2453,6 +2447,11 @@ The Nautilus DevOps team aims to containerize various applications following a r
   </figcaption>
 </figure>
 
+## **Day 35: Install Docker Packages and Start Docker Service**
+
+The Nautilus DevOps team aims to containerize various applications following a recent meeting with the application development team. They intend to conduct testing with the following steps:
+1. Install `docker-ce` and `docker compose` packages on `App Server 1`.  
+2. Initiate the `docker` service.
 
 ### System Information
 
@@ -3075,4 +3074,97 @@ curl http://localhost:8091/
 
 ```
 Welcome to xFusionCorp Industries!
+```
+
+
+<figure style="max-width:720px; margin:0 auto; text-align:center;">
+  <img src="../assets/Images/kube.png"
+       alt="Kubernetes"
+       style="width:100%; max-width:720px; display:block; margin:0 auto;
+              border-radius:18px; box-shadow:0 8px 24px rgba(0,0,0,0.12);
+              border:1px solid rgba(0,0,0,0.06); object-fit:cover;" />
+  <figcaption style="font-size:0.9rem; color:var(--text-muted,#666); margin-top:8px;">
+    Kubernetes 
+  </figcaption>
+</figure>
+
+
+## **Day 48: Deploy Pods in Kubernetes Cluster**
+
+The Nautilus DevOps team is diving into Kubernetes for application management. One team member has a task to create a pod according to the details below:
+
+    Create a pod named pod-nginx using the nginx image with the latest tag. Ensure to specify the tag as nginx:latest.
+
+    Set the app label to nginx_app, and name the container as nginx-container.
+
+Note: The kubectl utility on jump_host is configured to operate with the Kubernetes cluster.
+
+### Copy POD Syntax
+
+```sh
+kubectl run nginx-pod --image=nginx --restart=Never --dry-run=client -o yaml > pod-nginx.yaml
+```
+
+### Pod Manifest (YAML)
+
+The following YAML file was used to define and create the Pod:
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-nginx
+  labels:
+    app: nginx_app
+spec:
+  containers:
+  - name: nginx-container
+    image: nginx:latest
+```
+
+The Pod was created using the command:
+
+```bash
+kubectl apply -f pod-nginx.yaml
+```
+### Pod Verification
+
+After deployment, the Pod was verified using `kubectl describe` to confirm its status, image, labels, and container details.
+
+```bash
+kubectl describe pod pod-nginx
+```
+
+#### Output Summary
+
+```
+Name:             pod-nginx
+Namespace:        default
+Node:             kodekloud-control-plane/172.17.0.2
+Start Time:       Fri, 23 Jan 2026 08:41:15 +0000
+Status:           Running
+IP:               10.244.0.5
+
+Labels:
+  app=nginx_app
+
+Containers:
+  nginx-container:
+    Image:          nginx:latest
+    State:          Running
+    Ready:          True
+    Restart Count:  0
+
+Conditions:
+  Initialized       True
+  Ready             True
+  ContainersReady   True
+  PodScheduled      True
+
+Events:
+  Successfully assigned pod-nginx to kodekloud-control-plane
+  Pulling image "nginx:latest"
+  Successfully pulled image "nginx:latest"
+  Created container nginx-container
+  Started container nginx-container
 ```
