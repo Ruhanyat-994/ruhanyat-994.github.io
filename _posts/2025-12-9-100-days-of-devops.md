@@ -3168,3 +3168,33 @@ Events:
   Created container nginx-container
   Started container nginx-container
 ```
+## **Day 49: Deploy Applications with Kubernetes Deployments**
+
+The Nautilus DevOps team is delving into Kubernetes for app management. One team member needs to create a deployment following these details:
+Create a deployment named `nginx` to deploy the application `nginx` using the image `nginx:latest` (ensure to specify the tag)
+`Note:` The `kubectl` utility on `jump_host` is set up to interact with the Kubernetes cluster.
+Since `kubectl` is already configured on **jump_host**, you can create the deployment directly from the command line.
+
+
+Run:
+
+```bash
+kubectl create deployment nginx --image=nginx:latest
+```
+
+This will:
+
+* Create a deployment named **nginx**
+* Use the image **nginx:latest** (tag explicitly specified)
+
+To verify it was created successfully:
+
+```bash
+kubectl get deployments
+```
+
+And to check the pods:
+
+```bash
+kubectl get pods
+```
