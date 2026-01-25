@@ -3198,3 +3198,58 @@ And to check the pods:
 ```bash
 kubectl get pods
 ```
+
+## **Day 50: Set Resource Limits in Kubernetes Pods**
+
+The Nautilus DevOps team has noticed performance issues in some Kubernetes-hosted applications due to resource constraints. To address this, they plan to set limits on resource utilization. Here are the details:
+Create a pod named `httpd-pod` with a container named `httpd-container`. Use the `httpd` image with the `latest` tag (specify as `httpd:latest`). Set the following resource limits:
+Requests: Memory: `15Mi`, CPU: `100m`
+Limits: Memory: `20Mi`, CPU: `100m`
+`Note:` The `kubectl` utility on `jump_host` is configured to operate with the Kubernetes cluster.
+
+
+### httpd-pod.yaml
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: httpd-pod
+spec:
+  containers:
+    - name: httpd-container
+      image: httpd:latest
+      resources:
+        requests:
+          memory: "15Mi"
+          cpu: "100m"
+        limits:
+          memory: "20Mi"
+          cpu: "100m"
+```
+
+### Apply and Verify
+
+Create pod:
+
+```bash
+kubectl apply -f pod.yaml
+```
+
+Check pod:
+
+```bash
+kubectl get pods
+```
+
+Detailed info:
+
+```bash
+kubectl describe pod httpd-pod.yaml
+```
+
+### Quick Create Without YAML
+
+```bash
+kubectl run httpd-pod --image=httpd:latest --restart=Never --requests='cpu=100m,memory=15Mi' --limits='cpu=100m,memory=20Mi'
+```
