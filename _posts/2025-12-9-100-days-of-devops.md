@@ -3233,8 +3233,9 @@ spec:
 Create pod:
 
 ```bash
-kubectl apply -f httpd-pod.yaml
-```
+kubectl apply -f  httpd-pod.yaml
+``` 
+
 
 Check pod:
 
