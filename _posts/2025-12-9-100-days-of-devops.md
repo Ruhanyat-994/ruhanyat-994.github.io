@@ -3254,3 +3254,58 @@ kubectl describe pod httpd-pod.yaml
 ```bash
 kubectl run httpd-pod --image=httpd:latest --restart=Never --requests='cpu=100m,memory=15Mi' --limits='cpu=100m,memory=20Mi'
 ```
+
+## **Day 51: Execute Rolling Updates in Kubernetes**
+
+An application currently running on the Kubernetes cluster employs the nginx web server. The Nautilus application development team has introduced some recent changes that need deployment. They've crafted an image `nginx:1.17` with the latest updates.
+Execute a rolling update for this application, integrating the `nginx:1.17` image. The deployment is named `nginx-deployment`.
+Ensure all pods are operational post-update.
+`Note:` The `kubectl` utility on `jump_host` is set up to operate with the Kubernetes cluster
+
+### Check Current Cluster State
+
+```bash
+kubectl get pods
+kubectl get deployments
+kubectl describe pods
+```
+### Inspect Deployment Details
+
+```bash
+kubectl get deployment nginx-deployment -o yaml | grep -i name:
+```
+### Perform Rolling Update (Update Image)
+
+```bash
+kubectl set image deployment/nginx-deployment nginx-container=nginx:1.17
+```
+
+### Monitor Rollout Status
+
+```bash
+kubectl rollout status deployment/nginx-deployment
+```
+### Verify Pods After Update
+
+```bash
+kubectl get pods
+kubectl get deployments
+```
+### Confirm Updated Image
+
+```bash
+kubectl describe deployment nginx-deployment | grep Image
+```
+
+### Rollback (If Needed)
+
+```bash
+kubectl rollout undo deployment/nginx-deployment
+```
+### Reference Documentation
+
+I found the Kubernetes documentation very helpful while performing this lab. The official documentation clearly explains deployments, rolling updates, and image updates with practical examples.
+
+kubectl rollout Reference: 
+
+> [You can find it here!](https://kubernetes.io/docs/tutorials/kubernetes-basics/update/update-intro/)
