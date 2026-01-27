@@ -3309,3 +3309,80 @@ I found the Kubernetes documentation very helpful while performing this lab. The
 kubectl rollout Reference: 
 
 > [You can find it here!](https://kubernetes.io/docs/tutorials/kubernetes-basics/update/update-intro/)
+
+## **Day 52: Revert Deployment to Previous Version in Kubernetes**
+
+Earlier today, the Nautilus DevOps team deployed a new release for an application. However, a customer has reported a bug related to this recent release. Consequently, the team aims to revert to the previous version.
+There exists a deployment named `nginx-deployment`; initiate a rollback to the previous revision.
+`Note:` The `kubectl` utility on `jump_host` is configured to interact with the Kubernetes cluster.
+
+**List all deployments**
+
+```bash
+kubectl get deployments
+```
+
+**Check pods**
+
+```bash
+kubectl get pods
+```
+
+**Check detailed deployment info**
+
+```bash
+kubectl describe deployment nginx-deployment
+```
+
+### View Rollout History
+
+**View rollout history of a specific deployment**
+
+```bash
+kubectl rollout history deployment nginx-deployment
+```
+
+Output example:
+
+```
+REVISION  CHANGE-CAUSE
+1         <none>
+2         kubectl set image deployment nginx-deployment nginx-container=nginx:stable --record=true
+```
+
+> `REVISION` shows deployment versions.
+> `CHANGE-CAUSE` shows what command triggered the update (if `--record` was used).
+
+### Rollback Deployment
+
+**Rollback to previous revision**
+
+```bash
+kubectl rollout undo deployment nginx-deployment
+```
+
+**Rollback to a specific revision**
+
+```bash
+kubectl rollout undo deployment nginx-deployment --to-revision=1
+```
+
+### Verify Rollback
+
+**Check rollout status**
+
+```bash
+kubectl rollout status deployment nginx-deployment
+```
+
+**Confirm running pods**
+
+```bash
+kubectl get pods
+```
+
+**Verify image version**
+
+```bash
+kubectl describe deployment nginx-deployment | grep -i image
+```
