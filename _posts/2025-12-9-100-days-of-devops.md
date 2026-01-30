@@ -3386,3 +3386,128 @@ kubectl get pods
 ```bash
 kubectl describe deployment nginx-deployment | grep -i image
 ```
+
+## **Day 53: Resolve VolumeMounts Issue in Kubernetes**
+
+We encountered an issue with our Nginx and PHP-FPM setup on the Kubernetes cluster this morning, which halted its functionality. Investigate and rectify the issue:  
+
+The pod name is `nginx-phpfpm` and configmap name is `nginx-config`. Identify and fix the problem.  
+Once resolved, copy `/home/thor/index.php` file from the `jump host` to the `nginx-container` within the nginx document root. After this, you should be able to access the website using `Website` button on the top bar.  
+`Note:` The `kubectl` utility on `jump_host` is configured to operate with the Kubernetes cluster.
+
+### 1. Initial Assessment
+
+The issue occurred in the `nginx-phpfpm` pod consisting of:
+
+* `nginx:latest`
+* `php:7.2-fpm-alpine`
+* A shared `emptyDir` volume
+* A ConfigMap named `nginx-config`
+
+Initial verification confirmed the pod was in a **Running** state and both containers were marked **Ready**:
+
+```bash
+kubectl get pod
+kubectl describe pod nginx-phpfpm
+kubectl logs nginx-phpfpm -c nginx-container
+```
+
+Since the containers were healthy, the issue was isolated to configuration rather than container failure.
+
+### 2. Identifying the Root Cause
+
+Upon reviewing the pod specification and ConfigMap, a directory mismatch was identified.
+
+The Nginx configuration defined the document root as:
+
+```
+root /var/www/html;
+```
+
+However, the PHP-FPM container was initially mounting the shared volume at:
+
+```
+/usr/share/nginx/html
+```
+
+This caused a mismatch between:
+
+* The directory Nginx was serving from (`/var/www/html`)
+* The directory where PHP files were expected
+* The shared volume mount path between containers
+
+As a result, Nginx could not properly locate and serve the PHP files.
+
+### 3. Corrective Action
+
+The fix involved standardizing the shared volume mount path across both containers.
+
+The corrected pod configuration ensured both containers mounted the shared volume at:
+
+```
+/var/www/html
+```
+
+Relevant section of the pod spec:
+
+```yaml
+containers:
+- image: php:7.2-fpm-alpine
+  name: php-fpm-container
+  volumeMounts:
+  - mountPath: /var/www/html
+    name: shared-files
+
+- image: nginx:latest
+  name: nginx-container
+  volumeMounts:
+  - mountPath: /var/www/html
+    name: shared-files
+  - mountPath: /etc/nginx/nginx.conf
+    name: nginx-config-volume
+    subPath: nginx.conf
+```
+
+The ConfigMap remained correctly configured:
+
+```nginx
+root /var/www/html;
+
+location ~ \.php$ {
+  include fastcgi_params;
+  fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+  fastcgi_pass 127.0.0.1:9000;
+}
+```
+
+This alignment ensured:
+
+* Both containers accessed the same directory
+* Nginx served files from the correct path
+* PHP-FPM processed files from the same shared volume
+
+### 4. Pod Recreation
+
+After correcting the mount path, the pod was recreated to apply changes:
+
+```bash
+kubectl delete pod nginx-phpfpm
+kubectl apply -f nginx-phpfpm.yml
+```
+
+The new pod initialized successfully with both containers ready.
+
+### 5. Deploying the Application File
+
+The required PHP file was copied from the jump host into the Nginx container:
+
+```bash
+kubectl cp /home/thor/index.php nginx-phpfpm:/var/www/html/index.php -c nginx-container
+```
+
+Verification confirmed successful placement:
+
+```bash
+kubectl exec -it nginx-phpfpm -c nginx-container -- ls /var/www/html
+```
+
