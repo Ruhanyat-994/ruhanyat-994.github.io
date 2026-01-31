@@ -1,5 +1,5 @@
 ---
-title: "Hashicorp Vault Configuration & Auto Unsealing using AWS KMS"
+title: "Hashicorp Vault Configuration and Auto Unsealing using AWS KMS"
 date: 2026-01-31 01:15:00 +0600
 categories: [Cloud_Native,AWS,Security]
 tags: [Cloud, DevOps, AWS,Hashicorp, Security, Encryption]
@@ -31,10 +31,10 @@ tags: [Cloud, DevOps, AWS,Hashicorp, Security, Encryption]
   - [Step 5: Security Group Configuration](#step-5-security-group-configuration)
   - [Step 6: Vault Installation (Automated via EC2 User Data)](#step-6-vault-installation-automated-via-ec2-user-data)
   - [Step 7: Create Network Load Balancer](#step-7-create-network-load-balancer)
-  - [Step 8: Generate TLS Certificate on Vault 1 and Moving it to Every Vault](#step8)
+  - [Step 8: Generate TLS Certificate on Vault 1 and Moving it to Every Vault](#step-8-generate-tls-certificate-on-vault-1-and-moving-it-to-every-vault)
   - [Step 9: Vault Configuration (vault.hcl)](#step-9-vault-configuration-vaulthcl)
   - [Step 10: Start Vault](#step-10-start-vault)
-  - [Step 11: Initialize Cluster Only Vault1](#step11)
+  - [Step 11: Initialize Cluster Only Vault1](#step-11-initialize-cluster-only-vault1)
   - [Step 12: Verify Cluster](#step-12-verify-cluster)
   - [Step 13: Troubleshooting](#step-13-troubleshooting)
   - [Step 14: How To Confirm Everything Is Working](#step-14-how-to-confirm-everything-is-working)
@@ -333,8 +333,9 @@ EC2 → Load Balancers → Create Load Balancer
 
 This creates one stable endpoint for Vault clients.
 
-<a id="step8"></a>
-## Step 8: Generate TLS Certificate on Vault 1 and Moving it to Every Vault
+
+## Step 8: Generate TLS Certificate on Vault 1 and Moving it to Every Vault 
+
 
 ```bash
 openssl req -x509 -nodes -days 3650 -newkey rsa:4096 \
@@ -546,8 +547,8 @@ systemctl status vault
 ```
 - Do it On each vault
 
-<a id="step11"></a>
-## Step 11:  Initialize Cluster - Only vault1
+
+## Step 11: Initialize Cluster Only Vault1
 
 ```bash
 export VAULT_ADDR="https://172.31.46.251:8200"
