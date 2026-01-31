@@ -31,7 +31,7 @@ tags: [Cloud, DevOps, AWS,Hashicorp, Security, Encryption]
   - [Step 5: Security Group Configuration](#step-5-security-group-configuration)
   - [Step 6: Vault Installation (Automated via EC2 User Data)](#step-6-vault-installation-automated-via-ec2-user-data)
   - [Step 7: Create Network Load Balancer](#step-7-create-network-load-balancer)
-  - [Step 8: Generate TLS Certificate (Vault1 Only)](#step-8-generate-tls-certificate-vault1-only)
+  - [Step 8: Generate TLS Certificate on Vault 1 and Moving it to Every Vault](#step8)
   - [Step 9: Vault Configuration (vault.hcl)](#step-9-vault-configuration-vaulthcl)
   - [Step 10: Start Vault](#step-10-start-vault)
   - [Step 11: Initialize Cluster Only Vault1](#step11)
@@ -333,7 +333,7 @@ EC2 → Load Balancers → Create Load Balancer
 
 This creates one stable endpoint for Vault clients.
 
-
+<a id="step8"></a>
 ## Step 8: Generate TLS Certificate on Vault 1 and Moving it to Every Vault
 
 ```bash
@@ -347,23 +347,6 @@ Zip and copy to other nodes:
 
 ```bash
 zip vault-tls.zip vault.crt vault.key
-```
-
-Move certs:
-
-```bash
-mkdir -p /etc/vault.d/tls
-mv vault.crt vault.key /etc/vault.d/tls/
-chown -R vault:vault /etc/vault.d/tls
-chmod 600 /etc/vault.d/tls/vault.key
-chmod 644 /etc/vault.d/tls/vault.crt
-```
-
-Trust certificate:
-
-```bash
-cp /etc/vault.d/tls/vault.crt /usr/local/share/ca-certificates/vault.crt
-update-ca-certificates
 ```
 
 ### Moving To Multiple EC2
@@ -413,6 +396,23 @@ update-ca-certificates
 
 ```bash
 unzip vault-tls.zip -d /etc/vault.d/tls
+```
+
+Move certs: Do it for Every Vaults
+
+```bash
+mkdir -p /etc/vault.d/tls
+mv vault.crt vault.key /etc/vault.d/tls/
+chown -R vault:vault /etc/vault.d/tls
+chmod 600 /etc/vault.d/tls/vault.key
+chmod 644 /etc/vault.d/tls/vault.crt
+```
+
+Trust certificate:
+
+```bash
+cp /etc/vault.d/tls/vault.crt /usr/local/share/ca-certificates/vault.crt
+update-ca-certificates
 ```
 
 ---
