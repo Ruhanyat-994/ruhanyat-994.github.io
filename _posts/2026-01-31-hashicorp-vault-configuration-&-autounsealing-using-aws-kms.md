@@ -34,7 +34,7 @@ tags: [Cloud, DevOps, AWS,Hashicorp, Security, Encryption]
   - [Step 8: Generate TLS Certificate (Vault1 Only)](#step-8-generate-tls-certificate-vault1-only)
   - [Step 9: Vault Configuration (vault.hcl)](#step-9-vault-configuration-vaulthcl)
   - [Step 10: Start Vault](#step-10-start-vault)
-  - [Step 11: Initialize Cluster (Only vault1)](#step-11-initialize-cluster-only-vault1)
+  - [Step 11: Initialize Cluster Only Vault1](#step11)
   - [Step 12: Verify Cluster](#step-12-verify-cluster)
   - [Step 13: Troubleshooting](#step-13-troubleshooting)
   - [Step 14: How To Confirm Everything Is Working](#step-14-how-to-confirm-everything-is-working)
@@ -334,7 +334,7 @@ EC2 → Load Balancers → Create Load Balancer
 This creates one stable endpoint for Vault clients.
 
 
-## Step 8: Generate TLS Certificate (Vault1 Only)
+## Step 8: Generate TLS Certificate on Vault 1 and Moving it to Every Vault
 
 ```bash
 openssl req -x509 -nodes -days 3650 -newkey rsa:4096 \
@@ -364,6 +364,55 @@ Trust certificate:
 ```bash
 cp /etc/vault.d/tls/vault.crt /usr/local/share/ca-certificates/vault.crt
 update-ca-certificates
+```
+
+### Moving To Multiple EC2
+
+
+
+1. On **Vault-2** (open a separate Instance Connect session):
+
+   * Create the directory where the TLS file will go:
+
+   ```bash
+   mkdir -p /home/ubuntu
+   ```
+
+2. On **Vault-1** session:
+
+   * Use `cat` + `copy-paste` to transfer the zip contents:
+
+   ```bash
+   base64 vault-tls.zip
+   ```
+
+   * This outputs a long Base64 string.
+   * Copy that entire string.
+
+3. On **Vault-2**:
+
+   * Create a file and paste the Base64 string into it:
+
+   ```bash
+   cat > vault-tls.b64
+   ```
+
+   * Paste the string, then press `Ctrl+D`.
+
+   * Decode it:
+
+   ```bash
+   base64 -d vault-tls.b64 > vault-tls.zip
+   ```
+
+   * Now `vault-tls.zip` is on Vault-2.
+
+4. Repeat the same for **Vault-3**.
+
+5. On each node, unzip:
+
+```bash
+unzip vault-tls.zip -d /etc/vault.d/tls
 ```
 
 ---
@@ -497,8 +546,8 @@ systemctl status vault
 ```
 - Do it On each vault
 
-
-## Step 11:  Initialize Cluster (Only vault1)
+<a id="step11"></a>
+## Step 11:  Initialize Cluster - Only vault1
 
 ```bash
 export VAULT_ADDR="https://172.31.46.251:8200"
