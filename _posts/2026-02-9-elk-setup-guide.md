@@ -1,5 +1,5 @@
 ---
-title: "ELK(Elasticsearch, Logstash, Kibana) step by step setup guide on AWS EC2"
+title: "Elasticsearch, Logstash, Kibana step by step setup guide on AWS EC2"
 date: 2026-02-9 01:19:00 +0600
 categories: [Monitoring, Log, ELK]
 tags: [ELK, Cloud, Monitoring, DevOps, Log, Elasticsearch, Kibana, Logstash]
