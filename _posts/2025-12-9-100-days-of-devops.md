@@ -3651,7 +3651,7 @@ Following the separation of concerns principle, we implement the **Sidecar patte
 > **Note:** The `kubectl` utility on `jump_host` has been configured to work with the kubernetes cluster.
 
 
-## Step 1: Create the Pod Manifest
+### Step 1: Create the Pod Manifest
 
 Create a file named:
 
@@ -3689,7 +3689,7 @@ spec:
 Save and exit.
 
 
-## Step 2: Deploy the Pod
+### Step 2: Deploy the Pod
 
 Apply the manifest:
 
@@ -3704,7 +3704,7 @@ pod/webserver created
 ```
 
 
-## Step 3: Verify Pod Status
+### Step 3: Verify Pod Status
 
 Check whether the Pod is running:
 
