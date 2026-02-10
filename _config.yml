@@ -11,7 +11,7 @@ timezone: Asia/Dhaka
 
 # jekyll-seo-tag settings
 title: Mian Al Ruhanyat # main title
-tagline: AWS || DevOps || Springboot@Java || Penetration Testing # subtitle
+tagline: AWS & DEVOPS # subtitle
 description: >-
   A documentation vault for learning secure coding!
 
