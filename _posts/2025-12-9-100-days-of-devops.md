@@ -3751,8 +3751,20 @@ kubectl get pods
 
 Ensure 3 pods are running.
 
----
+Edit:
 
+Now set the container name properly (since kubectl create deployment auto-generates it):
+
+```sh
+kubectl edit deployment nginx-deployment
+```
+Change the container name under `spec.template.spec.containers` to:
+
+```yaml
+name: nginx-container
+```
+
+Save and exit.
 #### Step 2: Expose Deployment as NodePort Service
 
 ```bash
