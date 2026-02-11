@@ -3721,3 +3721,142 @@ webserver   2/2     Running   0          10s
 
 `2/2` means both containers are running.
 
+## **Day 56: Deploy Nginx Web Server on Kubernetes Cluster**
+
+Some of the Nautilus team developers are developing a static website and they want to deploy it on Kubernetes cluster. They want it to be highly available and scalable. Therefore, based on the requirements, the DevOps team has decided to create a deployment for it with multiple replicas. Below you can find more details about it:
+
+1. Create a deployment using `nginx` image with `latest` tag only and remember to mention the tag i.e `nginx:latest`. Name it as `nginx-deployment`. The container should be named as `nginx-container`, also make sure replica counts are `3`.
+2. Create a `NodePort` type service named `nginx-service`. The nodePort should be `30011`.
+`Note:` The `kubectl` utility on `jump_host` has been configured to work with the kubernetes cluster.
+
+
+## Method 1: Imperative Approach 
+
+This method uses direct CLI commands. It is useful for quick setups, labs, and troubleshooting.
+
+## Step 1: Create Deployment
+
+```bash
+kubectl create deployment nginx-deployment \
+  --image=nginx:latest \
+  --replicas=3
+```
+
+Verify:
+
+```bash
+kubectl get deployments
+kubectl get pods
+```
+
+Ensure 3 pods are running.
+
+---
+
+## Step 2: Expose Deployment as NodePort Service
+
+```bash
+kubectl expose deployment nginx-deployment \
+  --name=nginx-service \
+  --type=NodePort \
+  --port=80 \
+  --target-port=80
+```
+
+---
+
+## Step 3: Set NodePort to 30011
+
+```bash
+kubectl patch svc nginx-service -p '{
+  "spec": {
+    "ports": [{
+      "port": 80,
+      "targetPort": 80,
+      "nodePort": 30011
+    }]
+  }
+}'
+```
+
+---
+
+## Step 4: Verify Service
+
+```bash
+kubectl get svc
+```
+
+Expected output:
+
+```
+nginx-service   NodePort   80:30011/TCP
+```
+
+---
+
+## Method 2: Declarative Approach 
+
+This is the production-style approach. Infrastructure is defined as code and can be version controlled.
+
+---
+
+## Step 1: Create YAML File
+
+```bash
+vi nginx.yaml
+```
+
+Paste the following configuration:
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx-app
+  template:
+    metadata:
+      labels:
+        app: nginx-app
+    spec:
+      containers:
+        - name: nginx-container
+          image: nginx:latest
+          ports:
+            - containerPort: 80
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-service
+spec:
+  type: NodePort
+  selector:
+    app: nginx-app
+  ports:
+    - port: 80
+      targetPort: 80
+      nodePort: 30011
+```
+
+## Step 2: Apply Configuration
+
+```bash
+kubectl apply -f nginx.yaml
+```
+
+---
+
+## Step 3: Verify Deployment and Service
+
+```bash
+kubectl get deployments
+kubectl get pods
+kubectl get svc
+```
