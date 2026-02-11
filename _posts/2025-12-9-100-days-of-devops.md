@@ -3730,11 +3730,11 @@ Some of the Nautilus team developers are developing a static website and they wa
 `Note:` The `kubectl` utility on `jump_host` has been configured to work with the kubernetes cluster.
 
 
-## Method 1: Imperative Approach 
+### Method 1: Imperative Approach 
 
 This method uses direct CLI commands. It is useful for quick setups, labs, and troubleshooting.
 
-## Step 1: Create Deployment
+#### Step 1: Create Deployment
 
 ```bash
 kubectl create deployment nginx-deployment \
@@ -3753,7 +3753,7 @@ Ensure 3 pods are running.
 
 ---
 
-## Step 2: Expose Deployment as NodePort Service
+#### Step 2: Expose Deployment as NodePort Service
 
 ```bash
 kubectl expose deployment nginx-deployment \
@@ -3765,7 +3765,7 @@ kubectl expose deployment nginx-deployment \
 
 ---
 
-## Step 3: Set NodePort to 30011
+#### Step 3: Set NodePort to 30011
 
 ```bash
 kubectl patch svc nginx-service -p '{
@@ -3781,7 +3781,7 @@ kubectl patch svc nginx-service -p '{
 
 ---
 
-## Step 4: Verify Service
+#### Step 4: Verify Service
 
 ```bash
 kubectl get svc
@@ -3795,13 +3795,13 @@ nginx-service   NodePort   80:30011/TCP
 
 ---
 
-## Method 2: Declarative Approach 
+### Method 2: Declarative Approach 
 
 This is the production-style approach. Infrastructure is defined as code and can be version controlled.
 
 ---
 
-## Step 1: Create YAML File
+#### Step 1: Create YAML File
 
 ```bash
 vi nginx.yaml
@@ -3845,7 +3845,7 @@ spec:
       nodePort: 30011
 ```
 
-## Step 2: Apply Configuration
+#### Step 2: Apply Configuration
 
 ```bash
 kubectl apply -f nginx.yaml
@@ -3853,7 +3853,7 @@ kubectl apply -f nginx.yaml
 
 ---
 
-## Step 3: Verify Deployment and Service
+#### Step 3: Verify Deployment and Service
 
 ```bash
 kubectl get deployments
