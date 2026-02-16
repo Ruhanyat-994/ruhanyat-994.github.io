@@ -3940,3 +3940,79 @@ kubectl logs -f print-envars-greeting
 Welcome to DevOps Industries
 ```
 
+## **Day 58: Deploy Grafana on Kubernetes Cluster**
+
+The Nautilus DevOps teams is planning to set up a Grafana tool to collect and analyze analytics from some applications. They are planning to deploy it on Kubernetes cluster. Below you can find more details.  
+1.) Create a deployment named `grafana-deployment-devops` using any grafana image for Grafana app. Set other parameters as per your choice.  
+2.) Create `NodePort` type service with nodePort `32000` to expose the app.  
+
+`You need not to make any configuration changes inside the Grafana app once deployed, just make sure you are able to access the Grafana login page.`  
+`Note:` The `kubectl` on `jump_host` has been configured to work with kubernetes cluster.
+
+### Manifest file
+- This file holds the deployment and the service scripts
+- Save this into `grafana.yaml` 
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: grafana
+  name: grafana-deployment-devops
+spec:
+  selector:
+    matchLabels:
+      app: grafana
+  template:
+    metadata:
+      labels:
+        app: grafana
+    spec:
+      securityContext:
+        fsGroup: 472
+        supplementalGroups:
+          - 0
+      containers:
+        - name: grafana
+          image: grafana/grafana:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3000
+              name: http-grafana
+              protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /robots.txt
+              port: 3000
+              scheme: HTTP
+            
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: grafana-service
+spec:
+  type: NodePort
+  selector:
+    app: grafana
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
+      nodePort: 32000
+
+```
+
+### Deploying to NodePort
+```sh
+kubectl apply -f grafana.yaml
+
+kubectl get all
+```
+
+- Wait for some time and check the `http://NodeIp:nodepord` but for this lab just hit the `Grafana` button.
+
+for details check the official documentation: [Grafana Documentation](https://grafana.com/docs/grafana/latest/setup-grafana/installation/kubernetes/)
