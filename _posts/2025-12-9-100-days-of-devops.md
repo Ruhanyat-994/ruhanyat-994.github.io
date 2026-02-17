@@ -4016,3 +4016,230 @@ kubectl get all
 - Wait for some time and check the `http://NodeIp:nodepord` but for this lab just hit the `Grafana` button.
 
 for details check the official documentation: [Grafana Documentation](https://grafana.com/docs/grafana/latest/setup-grafana/installation/kubernetes/)
+
+
+## **Day 59: Troubleshoot Deployment issues in Kubernetes**
+
+Last week, the Nautilus DevOps team deployed a redis app on Kubernetes cluster, which was working fine so far. This morning one of the team members was making some changes in this existing setup, but he made some mistakes and the app went down. We need to fix this as soon as possible. Please take a look.  
+  
+The deployment name is `redis-deployment`. The pods are not in running state right now, so please look into the issue and fix the same.  
+`Note:` The `kubectl` utility on `jump_host` has been configured to work with the kubernetes cluster.
+
+
+### Step 1 — Check the overall state
+
+```bash
+kubectl get all
+```
+
+Output showed:
+
+```sh
+NAME                                    READY   STATUS              RESTARTS   AGE
+pod/redis-deployment-54cdf4f76d-4vqmv   0/1     ContainerCreating   0          58s
+
+NAME                 TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE
+service/kubernetes   ClusterIP   10.96.0.1    <none>        443/TCP   4m56s
+
+NAME                               READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/redis-deployment   0/1     1            0           58s
+
+NAME                                          DESIRED   CURRENT   READY   AGE
+replicaset.apps/redis-deployment-54cdf4f76d   1         1         0       58s
+```
+
+So the issue is at **pod startup**, not at service or deployment level.
+
+
+
+### Step 2 — Go directly to the pod
+
+```bash
+kubectl describe pod redis-deployment-54cdf4f76d-4vqmv
+```
+
+
+#### Events (most important)
+
+```dockerfile
+Events:
+  Type     Reason       Age                From               Message
+  ----     ------       ----               ----               -------
+  Normal   Scheduled    12m                default-scheduler  Successfully assigned default/redis-deployment-54cdf4f76d-4vqmv to kodekloud-control-plane
+  Warning  FailedMount  83s (x5 over 10m)  kubelet            Unable to attach or mount volumes: unmounted volumes=[config], unattached volumes=[], failed to process volumes=[]: timed out waiting for the condition
+  Warning  FailedMount  8s (x14 over 12m)  kubelet            MountVolume.SetUp failed for volume "config" : configmap "redis-conig" not found
+```
+
+""redis-conig" not found, this line gives the **first root cause**.
+
+
+
+### Step 3 — Validate the referenced resource
+
+```bash
+kubectl get configmap
+```
+
+Output:
+
+```sh
+NAME               DATA   AGE
+kube-root-ca.crt   1      16m
+redis-config       2      12m
+
+```
+
+Mismatch found:
+
+```
+redis-conig → wrong
+redis-config → correct
+```
+
+
+
+### Step 4 — Fix the deployment
+
+```bash
+kubectl edit deployment redis-deployment
+```
+
+Correct the ConfigMap name.
+
+
+
+### Step 5 — Observe rollout
+
+```bash
+kubectl get all
+```
+
+Now a **new pod** appears with:
+
+```sh
+NAME                                    READY   STATUS         RESTARTS   AGE
+pod/redis-deployment-5bcd4c7d64-fllmc   0/1     ErrImagePull   0          15s
+pod/redis-deployment-7c8d4f6ddf-tpvck   1/1     Running        0          7m26s
+
+NAME                 TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE
+service/kubernetes   ClusterIP   10.96.0.1    <none>        443/TCP   32m
+
+NAME                               READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/redis-deployment   1/1     1            1           28m
+
+NAME                                          DESIRED   CURRENT   READY   AGE
+replicaset.apps/redis-deployment-54cdf4f76d   0         0         0       28m
+replicaset.apps/redis-deployment-5bcd4c7d64   1         1         0       11m
+replicaset.apps/redis-deployment-7c8d4f6ddf   1         1         1       7m26s
+```
+
+This means:
+
+Volume issue is fixed
+Image phase is now failing
+
+
+
+### Step 6 — Describe the new pod
+
+```bash
+kubectl describe pod redis-deployment-5bcd4c7d64-fllmc
+```
+
+#### Containers section
+
+```
+Image: redis:alpin
+State: Waiting (ImagePullBackOff)
+```
+
+#### Events section
+
+```dockerfile
+Events:
+  Type     Reason     Age                From               Message
+  ----     ------     ----               ----               -------
+  Normal   Scheduled  35s                default-scheduler  Successfully assigned default/redis-deployment-5bcd4c7d64-fllmc to kodekloud-control-plane
+  Normal   Pulling    19s (x2 over 34s)  kubelet            Pulling image "redis:alpin"
+  Warning  Failed     18s (x2 over 34s)  kubelet            Failed to pull image "redis:alpin": rpc error: code = NotFound desc = failed to pull and unpack image "docker.io/library/redis:alpin": failed to resolve reference "docker.io/library/redis:alpin": docker.io/library/redis:alpin: not found
+  Warning  Failed     18s (x2 over 34s)  kubelet            Error: ErrImagePull
+  Normal   BackOff    7s (x2 over 34s)   kubelet            Back-off pulling image "redis:alpin"
+  Warning  Failed     7s (x2 over 34s)   kubelet            Error: ImagePullBackOff
+```
+
+Second root cause identified.
+
+
+### Step 7 — Fix the image
+
+```bash
+kubectl edit deployment redis-deployment
+```
+
+Change:
+
+```
+redis:alpin → redis:alpine
+```
+
+
+
+### Step 8 — Final rollout state
+
+```bash
+kubectl get all
+```
+
+You will see:
+
+```sh
+NAME                                    READY   STATUS    RESTARTS   AGE
+pod/redis-deployment-7c8d4f6ddf-tpvck   1/1     Running   0          12m
+
+NAME                 TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE
+service/kubernetes   ClusterIP   10.96.0.1    <none>        443/TCP   37m
+
+NAME                               READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/redis-deployment   1/1     1            1           33m
+
+NAME                                          DESIRED   CURRENT   READY   AGE
+replicaset.apps/redis-deployment-54cdf4f76d   0         0         0       33m
+replicaset.apps/redis-deployment-5bcd4c7d64   0         0         0       15m
+replicaset.apps/redis-deployment-7c8d4f6ddf   1         1         1       12m
+```
+
+
+
+### Minimal Debugging Logic (what to think when you see a state)
+
+#### Pod stuck in `ContainerCreating`
+
+Run:
+
+```bash
+kubectl describe pod <pod>
+```
+
+If Events show **FailedMount**, think only about:
+
+* ConfigMap
+* Secret
+* PVC
+* Volume name mismatch
+
+
+#### Pod in `ImagePullBackOff` or `ErrImagePull`
+
+Check in `kubectl describe pod`:
+
+```
+Containers → Image
+Events → pull error
+```
+
+Think only about:
+
+* Wrong image name
+* Wrong tag
+* Registry access
+
