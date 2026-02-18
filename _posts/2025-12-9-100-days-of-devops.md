@@ -4243,3 +4243,175 @@ Think only about:
 * Wrong tag
 * Registry access
 
+## **Day 60: Persistent Volumes in Kubernetes**
+
+The Nautilus DevOps team is working on a Kubernetes template to deploy a web application on the cluster. There are some requirements to create/use persistent volumes to store the application code, and the template needs to be designed accordingly. Please find more details below:
+
+1. Create a `PersistentVolume` named as `pv-devops`. Configure the `spec` as storage class should be `manual`, set capacity to `4Gi`, set access mode to `ReadWriteOnce`, volume type should be `hostPath` and set path to `/mnt/dba` (this directory is already created, you might not be able to access it directly, so you need not to worry about it).
+2. Create a `PersistentVolumeClaim` named as `pvc-devops`. Configure the `spec` as storage class should be `manual`, request `1Gi` of the storage, set access mode to `ReadWriteOnce`.
+3. Create a `pod` named as `pod-devops`, mount the persistent volume you created with claim name `pvc-devops` at document root of the web server, the container within the pod should be named as `container-devops` using image `httpd` with `latest` tag only (remember to mention the tag i.e `httpd:latest`).
+4. Create a node port type service named `web-devops` using node port `30008` to expose the web server running within the pod.
+`Note:` The `kubectl` utility on `jump_host` has been configured to work with the kubernetes cluster.
+
+
+
+### Create the file
+
+```bash
+vi pv-devops.yaml
+```
+
+### Add configuration
+
+```yaml
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-devops
+spec:
+  capacity:
+    storage: 4Gi
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: manual
+  hostPath:
+    path: /mnt/dba
+```
+
+### Apply the configuration
+
+```bash
+kubectl apply -f pv-devops.yaml
+```
+
+### Verify
+
+```bash
+kubectl get pv
+```
+
+Expected state:
+
+```
+STATUS: Available
+```
+
+---
+
+## Step 2 — Create the PersistentVolumeClaim
+
+### Create the file
+
+```bash
+vi pvc-devops.yaml
+```
+
+### Add configuration
+
+```yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-devops
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: manual
+  resources:
+    requests:
+      storage: 1Gi
+```
+
+### Apply the configuration
+
+```bash
+kubectl apply -f pvc-devops.yaml
+```
+
+### Verify binding
+
+```bash
+kubectl get pvc
+kubectl get pv
+```
+
+Expected state:
+
+```
+PVC → Bound
+PV  → Bound
+```
+
+---
+
+## Step 3 — Create the Pod and Service
+
+### Create the file
+
+```bash
+vi pod-svc.yaml
+```
+
+### Add configuration
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-devops
+  labels:
+    app: web-devops
+spec:
+  containers:
+    - name: container-devops
+      image: httpd:latest
+      volumeMounts:
+        - name: devops-storage
+          mountPath: /usr/local/apache2/htdocs
+  volumes:
+    - name: devops-storage
+      persistentVolumeClaim:
+        claimName: pvc-devops
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-devops
+spec:
+  type: NodePort
+  selector:
+    app: web-devops
+  ports:
+    - port: 80
+      targetPort: 80
+      nodePort: 30008
+```
+
+### Apply the configuration
+
+```bash
+kubectl apply -f pod-svc.yaml
+```
+
+---
+
+## Step 4 — Verify All Resources
+
+```bash
+kubectl get all
+```
+
+
+## Step 5 — Check if the pod is running or not
+
+```bash
+kubectl get all
+
+thor@jumphost ~$ kubectl get all
+NAME             READY   STATUS    RESTARTS   AGE
+pod/pod-devops   1/1     Running   0          7m48s
+
+NAME                 TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE
+service/kubernetes   ClusterIP   10.96.0.1       <none>        443/TCP        44m
+service/web-devops   NodePort    10.96.217.198   <none>        80:30008/TCP   7m48s
+```
