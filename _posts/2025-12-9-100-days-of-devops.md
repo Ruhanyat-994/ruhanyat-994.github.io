@@ -4254,14 +4254,15 @@ The Nautilus DevOps team is working on a Kubernetes template to deploy a web app
 `Note:` The `kubectl` utility on `jump_host` has been configured to work with the kubernetes cluster.
 
 
+### Step 1 - Create the PersistentVolume
 
-### Create the file
+#### Create the file
 
 ```bash
 vi pv-devops.yaml
 ```
 
-### Add configuration
+#### Add configuration
 
 ```yaml
 apiVersion: v1
@@ -4278,35 +4279,28 @@ spec:
     path: /mnt/dba
 ```
 
-### Apply the configuration
+#### Apply the configuration
 
 ```bash
 kubectl apply -f pv-devops.yaml
 ```
 
-### Verify
+#### Verify
 
 ```bash
 kubectl get pv
 ```
 
-Expected state:
 
-```
-STATUS: Available
-```
+### Step 2 — Create the PersistentVolumeClaim
 
----
-
-## Step 2 — Create the PersistentVolumeClaim
-
-### Create the file
+#### Create the file
 
 ```bash
 vi pvc-devops.yaml
 ```
 
-### Add configuration
+#### Add configuration
 
 ```yaml
 apiVersion: v1
@@ -4322,37 +4316,29 @@ spec:
       storage: 1Gi
 ```
 
-### Apply the configuration
+#### Apply the configuration
 
 ```bash
 kubectl apply -f pvc-devops.yaml
 ```
 
-### Verify binding
+#### Verify binding
 
 ```bash
 kubectl get pvc
 kubectl get pv
 ```
 
-Expected state:
 
-```
-PVC → Bound
-PV  → Bound
-```
+### Step 3 — Create the Pod and Service
 
----
-
-## Step 3 — Create the Pod and Service
-
-### Create the file
+#### Create the file
 
 ```bash
 vi pod-svc.yaml
 ```
 
-### Add configuration
+#### Add configuration
 
 ```yaml
 apiVersion: v1
@@ -4387,7 +4373,7 @@ spec:
       nodePort: 30008
 ```
 
-### Apply the configuration
+#### Apply the configuration
 
 ```bash
 kubectl apply -f pod-svc.yaml
@@ -4395,14 +4381,14 @@ kubectl apply -f pod-svc.yaml
 
 ---
 
-## Step 4 — Verify All Resources
+### Step 4 — Verify All Resources
 
 ```bash
 kubectl get all
 ```
 
 
-## Step 5 — Check if the pod is running or not
+### Step 5 — Check if the pod is running or not
 
 ```bash
 kubectl get all
