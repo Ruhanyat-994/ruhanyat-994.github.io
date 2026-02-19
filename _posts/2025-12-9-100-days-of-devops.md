@@ -4401,3 +4401,135 @@ NAME                 TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)        AG
 service/kubernetes   ClusterIP   10.96.0.1       <none>        443/TCP        44m
 service/web-devops   NodePort    10.96.217.198   <none>        80:30008/TCP   7m48s
 ```
+
+
+## **Day 61: Init Containers in Kubernetes**
+
+There are some applications that need to be deployed on Kubernetes cluster and these apps have some pre-requisites where some configurations need to be changed before deploying the app container. Some of these changes cannot be made inside the images so the DevOps team has come up with a solution to use init containers to perform these tasks during deployment. Below is a sample scenario that the team is going to test first.  
+  
+1. Create a `Deployment` named as `ic-deploy-nautilus`.  
+2. Configure `spec` as replicas should be `1`, labels `app` should be `ic-nautilus`, template's metadata lables `app` should be the same `ic-nautilus`.  
+3. The `initContainers` should be named as `ic-msg-nautilus`, use image `fedora` with `latest` tag and use command `'/bin/bash'`, `'-c'` and `'echo Init Done - Welcome to xFusionCorp Industries > /ic/official'`. The volume mount should be named as `ic-volume-nautilus` and mount path should be `/ic`.  
+4. Main container should be named as `ic-main-nautilus`, use image `fedora` with `latest` tag and use command `'/bin/bash'`, `'-c'` and `'while true; do cat /ic/official; sleep 5; done'`. The volume mount should be named as `ic-volume-nautilus` and mount path should be `/ic`.  
+5. Volume to be named as `ic-volume-nautilus` and it should be an emptyDir type.  
+
+`Note:` The `kubectl` utility on `jump_host` has been configured to work with the kubernetes cluster.
+
+### Creating Manifest File
+
+#### Step 1 — Create the Deployment manifest
+
+On the jump host, create the YAML:
+
+```bash
+vi ic-deploy-nautilus.yaml
+```
+
+Paste the configuration:
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: ic-deploy
+  name: ic-deploy-nautilus
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ic-nautilus
+  template:
+    metadata:
+      labels:
+        app: ic-nautilus
+    spec:
+      volumes:
+        - name: ic-volume-nautilus
+          emptyDir: {}
+
+      initContainers:
+        - name: ic-msg-nautilus
+          image: fedora:latest
+          imagePullPolicy: IfNotPresent
+          command: ['/bin/bash', '-c', 'echo Init Done - Welcome to xFusionCorp Industries > /ic/official']
+          volumeMounts:
+            - name: ic-volume-nautilus
+              mountPath: /ic
+      containers:
+        - name: ic-main-nautilus
+          image: fedora:latest
+          imagePullPolicy: IfNotPresent
+          command: ['/bin/bash', '-c', 'while true; do cat /ic/official; sleep 5; done']
+          volumeMounts:
+            - name: ic-volume-nautilus
+              mountPath: /ic
+```
+
+Save and exit.
+
+---
+
+#### Step 2 — Apply the Deployment
+
+```bash
+kubectl apply -f ic-deploy-nautilus.yaml
+```
+
+Deployment gets created.
+
+---
+
+#### Step 3 — Verify all resources
+
+```bash
+kubectl get all
+```
+
+This confirms:
+
+* Deployment created
+* ReplicaSet created
+* Pod running
+
+---
+
+#### Step 4 — Verify the Pod using label selector
+
+```bash
+kubectl get pods -l app=ic-nautilus
+```
+
+Output:
+
+```
+ic-deploy-nautilus-54dcb78c6c-2sttn   1/1   Running
+```
+
+This proves:
+
+* Selector and template labels match
+* Pod is successfully managed by the Deployment
+
+---
+
+#### Step 5 — Check application logs
+
+```bash
+kubectl logs ic-deploy-nautilus-54dcb78c6c-2sttn
+```
+
+Output:
+
+```
+Defaulted container "ic-main-nautilus" out of: ic-main-nautilus, ic-msg-nautilus (init)
+Init Done - Welcome to xFusionCorp Industries
+```
+
+repeating every 5 seconds.
+
+Explanation:
+
+* Init container already completed
+* Main container is running and reading the file from the shared volume
+
