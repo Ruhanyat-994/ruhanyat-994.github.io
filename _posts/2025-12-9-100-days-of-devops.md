@@ -4533,3 +4533,164 @@ Explanation:
 * Init container already completed
 * Main container is running and reading the file from the shared volume
 
+
+## **Day 62: Manage Secrets in Kubernetes**
+
+The Nautilus DevOps team is working to deploy some tools in Kubernetes cluster. Some of the tools are licence based so that licence information needs to be stored securely within Kubernetes cluster. Therefore, the team wants to utilize Kubernetes secrets to store those secrets. Below you can find more details about the requirements:  
+
+1. We already have a secret key file `ecommerce.txt` under `/opt` location on `jump host`. Create a `generic secret` named `ecommerce`, it should contain the password/license-number present in `ecommerce.txt` file.  
+2. Also create a `pod` named `secret-devops`.  
+3. Configure pod's `spec` as container name should be `secret-container-devops`, image should be `debian` with `latest` tag (remember to mention the tag with image). Use `sleep` command for container so that it remains in running state. Consume the created secret and mount it under `/opt/apps` within the container.  
+4. To verify you can exec into the container `secret-container-devops`, to check the secret key under the mounted path `/opt/apps`. Before hitting the `Check` button please make sure pod/pods are in running state, also validation can take some time to complete so keep patience.  
+
+`Note:` The `kubectl` utility on `jump_host` has been configured to work with the kubernetes cluster.
+
+
+### Declarative Approach (Using Manifest File)
+
+This approach uses YAML manifests and is preferred for **reproducibility, version control, and automation**.
+
+#### Step 1: Prepare the Manifest File
+
+Create a file named `secret.yaml` with the following content:
+
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ecommerce
+type: Opaque
+data:
+  ecommerce.txt: NWVjdXIz
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: secret-devops
+spec:
+  volumes:
+    - name: ecommerce-secret
+      secret:
+        secretName: ecommerce
+  containers:
+    - name: secret-container-devops
+      image: debian:latest
+      command: ["sleep", "3600"]
+      volumeMounts:
+        - name: ecommerce-secret
+          readOnly: true
+          mountPath: "/opt/apps"
+```
+
+Explanation:
+
+* `NWVjdXIz` is the base64-encoded value of `5ecur3`
+```sh
+echo -n "5ecur3" | base64
+```
+* The secret key name `ecommerce.txt` becomes a file inside the container
+* The secret is mounted at `/opt/apps`
+
+#### Step 2: Apply the Manifest
+
+```bash
+kubectl apply -f secret.yaml
+```
+
+Expected output:
+
+* Secret `ecommerce` created or unchanged
+* Pod `secret-devops` created
+
+#### Step 3: Verify Pod Status
+
+```bash
+kubectl get pods
+```
+
+Ensure the pod status is `Running`.
+
+#### Step 4: Verify Secret Inside the Container
+
+```bash
+kubectl exec -it secret-devops -c secret-container-devops -- /bin/bash
+```
+
+Inside the container:
+
+```bash
+cd /opt/apps
+ls
+cat ecommerce.txt
+```
+
+Expected output:
+
+```text
+5ecur3
+```
+
+Exit the container:
+
+```bash
+exit
+```
+
+
+### Imperative Approach (Using kubectl Commands)
+
+This approach creates resources directly from the command line and is useful for **quick tasks and troubleshooting**.
+
+#### Step 1: Create the Secret Imperatively
+
+```bash
+kubectl create secret generic ecommerce --from-file=/opt/ecommerce.txt
+```
+
+Verify:
+
+```bash
+kubectl get secret ecommerce
+```
+
+#### Step 2: Create the Pod Imperatively
+
+```bash
+kubectl run secret-devops \
+  --image=debian:latest \
+  --restart=Never \
+  --command -- sleep 3600
+```
+
+#### Step 3: Patch the Pod to Mount the Secret
+
+Create a small patch file `patch.yaml`:
+
+```yaml
+spec:
+  volumes:
+    - name: ecommerce-secret
+      secret:
+        secretName: ecommerce
+  containers:
+    - name: secret-devops
+      volumeMounts:
+        - name: ecommerce-secret
+          mountPath: /opt/apps
+          readOnly: true
+```
+
+Apply the patch:
+
+```bash
+kubectl patch pod secret-devops --patch-file patch.yaml
+```
+
+#### Step 4: Verify the Secret
+
+```bash
+kubectl exec -it secret-devops -- /bin/bash
+cd /opt/apps
+cat ecommerce.txt
+```
+
