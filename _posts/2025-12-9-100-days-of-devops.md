@@ -4694,3 +4694,274 @@ cd /opt/apps
 cat ecommerce.txt
 ```
 
+## **Day 63: Deploy Iron Gallery App on Kubernetes**
+
+There is an iron gallery app that the Nautilus DevOps team was developing. They have recently customized the app and are going to deploy the same on the Kubernetes cluster. Below you can find more details:  
+
+1. Create a namespace `iron-namespace-nautilus`
+2. Create a deployment `iron-gallery-deployment-nautilus` for `iron gallery` under the same namespace you created.
+    :- Labels `run` should be `iron-gallery`.
+    :- Replicas count should be `1`.
+    :- Selector's matchLabels `run` should be `iron-gallery`.
+    :- Template labels `run` should be `iron-gallery` under metadata.
+    :- The container should be named as `iron-gallery-container-nautilus`, use `kodekloud/irongallery:2.0` image ( use exact image name / tag ).
+    :- Resources limits for memory should be `100Mi` and for CPU should be `50m`.
+    :- First volumeMount name should be `config`, its mountPath should be `/usr/share/nginx/html/data`.
+    :- Second volumeMount name should be `images`, its mountPath should be `/usr/share/nginx/html/uploads`.
+    :- First volume name should be `config` and give it `emptyDir` and second volume name should be `images`, also give it `emptyDir`.
+    
+3. Create a deployment `iron-db-deployment-nautilus` for `iron db` under the same namespace.
+    :- Labels `db` should be `mariadb`.
+    :- Replicas count should be `1`.
+    :- Selector's matchLabels `db` should be `mariadb`.
+    :- Template labels `db` should be `mariadb` under metadata.
+    :- The container name should be `iron-db-container-nautilus`, use `kodekloud/irondb:2.0` image ( use exact image name / tag ).
+    :- Define environment, set `MYSQL_DATABASE` its value should be `database_host`, set `MYSQL_ROOT_PASSWORD` and `MYSQL_PASSWORD` value should be with some complex passwords for DB connections, and `MYSQL_USER` value should be any custom user ( except root ).
+    :- Volume mount name should be `db` and its mountPath should be `/var/lib/mysql`. Volume name should be `db` and give it an `emptyDir`.
+    
+4. Create a service for `iron db` which should be named `iron-db-service-nautilus` under the same namespace. Configure spec as selector's db should be `mariadb`. Protocol should be `TCP`, port and targetPort should be `3306` and its type should be `ClusterIP`.
+5. Create a service for `iron gallery` which should be named `iron-gallery-service-nautilus` under the same namespace. Configure spec as selector's run should be `iron-gallery`. Protocol should be `TCP`, port and targetPort should be `80`, nodePort should be `32678` and its type should be `NodePort`.  
+
+`Note:`  
+6. We don't need to make connection b/w database and front-end now, if the installation page is coming up it should be enough for now.
+7. The `kubectl` on `jump_host` has been configured to work with the kubernetes cluster.
+
+### Declarative Approach (Using Manifest File)
+
+This approach uses YAML manifests and is preferred for **reproducibility, version control, and automation**.
+
+#### Step 1: Prepare the Manifest File
+
+Create a file named `deployment-iron-app.yaml` with the following content:
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: iron-gallery-deployment-nautilus
+  namespace: iron-namespace-nautilus
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: iron-gallery
+  template:
+    metadata:
+      labels:
+        run: iron-gallery
+    spec:
+      containers:
+        - name: iron-gallery-container-nautilus
+          image: kodekloud/irongallery:2.0
+          imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              memory: "100Mi"
+              cpu: "50m"
+          volumeMounts:
+            - name: config
+              mountPath: /usr/share/nginx/html/data
+            - name: images
+              mountPath: /usr/share/nginx/html/uploads
+      volumes:
+        - name: config
+          emptyDir: {}
+        - name: images
+          emptyDir: {}
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: iron-db-deployment-nautilus
+  namespace: iron-namespace-nautilus
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      db: mariadb
+  template:
+    metadata:
+      labels:
+        db: mariadb
+    spec:
+      containers:
+        - name: iron-db-container-nautilus
+          image: kodekloud/irondb:2.0
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: MYSQL_DATABASE
+              value: database_host
+            - name: MYSQL_ROOT_PASSWORD
+              value: password@password
+            - name: MYSQL_PASSWORD
+              value: password@password
+            - name: MYSQL_USER
+              value: gallerydb
+          volumeMounts:
+            - name: db
+              mountPath: /var/lib/mysql
+      volumes:
+        - name: db
+          emptyDir: {}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: iron-db-service-nautilus
+  namespace: iron-namespace-nautilus
+spec:
+  type: ClusterIP
+  selector:
+    db: mariadb
+  ports:
+    - protocol: TCP
+      port: 3306
+      targetPort: 3306
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: iron-gallery-service-nautilus
+  namespace: iron-namespace-nautilus
+spec:
+  type: NodePort
+  selector:
+    run: iron-gallery
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+      nodePort: 32678
+```
+
+
+
+#### Step 2: Create the Namespace
+
+```bash
+kubectl create ns iron-namespace-nautilus
+```
+
+#### Step 3: Apply the Manifest
+
+```bash
+kubectl apply -f deployment-iron-app.yaml
+```
+
+
+#### Step 4: Verify Resources
+
+```bash
+kubectl get all -n iron-namespace-nautilus
+```
+
+> As per requirement, seeing the **installation page** is sufficient.
+
+
+### Imperative Approach (Using kubectl Commands)
+
+This approach creates resources directly from the command line and is useful for **quick tasks and troubleshooting**.
+
+
+#### Step 1: Create Namespace Imperatively
+
+```bash
+kubectl create namespace iron-namespace-nautilus
+```
+
+
+#### Step 2: Create Iron Gallery Deployment Imperatively
+
+```bash
+kubectl create deployment iron-gallery-deployment-nautilus \
+  --image=kodekloud/irongallery:2.0 \
+  -n iron-namespace-nautilus
+```
+
+Scale replicas to 1 (explicit):
+
+```bash
+kubectl scale deployment iron-gallery-deployment-nautilus \
+  --replicas=1 -n iron-namespace-nautilus
+```
+
+Add labels:
+
+```bash
+kubectl label deployment iron-gallery-deployment-nautilus \
+  run=iron-gallery -n iron-namespace-nautilus
+```
+
+> Volume mounts, resources, and emptyDir volumes **cannot be fully configured imperatively** and usually require `kubectl edit` or YAML.
+
+
+#### Step 3: Create Iron DB Deployment Imperatively
+
+```bash
+kubectl create deployment iron-db-deployment-nautilus \
+  --image=kodekloud/irondb:2.0 \
+  -n iron-namespace-nautilus
+```
+
+Add label:
+
+```bash
+kubectl label deployment iron-db-deployment-nautilus \
+  db=mariadb -n iron-namespace-nautilus
+```
+
+Add environment variables:
+
+```bash
+kubectl set env deployment/iron-db-deployment-nautilus \
+  MYSQL_DATABASE=database_host \
+  MYSQL_ROOT_PASSWORD=password@password \
+  MYSQL_PASSWORD=password@password \
+  MYSQL_USER=gallerydb \
+  -n iron-namespace-nautilus
+```
+
+---
+
+#### Step 4: Create Services Imperatively
+
+**Iron DB Service (ClusterIP)**
+
+```bash
+kubectl expose deployment iron-db-deployment-nautilus \
+  --name=iron-db-service-nautilus \
+  --port=3306 \
+  --target-port=3306 \
+  --type=ClusterIP \
+  -n iron-namespace-nautilus
+```
+
+**Iron Gallery Service (NodePort)**
+
+```bash
+kubectl expose deployment iron-gallery-deployment-nautilus \
+  --name=iron-gallery-service-nautilus \
+  --port=80 \
+  --target-port=80 \
+  --type=NodePort \
+  -n iron-namespace-nautilus
+```
+
+Set NodePort explicitly:
+
+```bash
+kubectl patch svc iron-gallery-service-nautilus \
+  -n iron-namespace-nautilus \
+  -p '{"spec":{"ports":[{"port":80,"targetPort":80,"nodePort":32678}]}}'
+```
+
+---
+
+#### Step 5: Verify Imperative Setup
+
+```bash
+kubectl get all -n iron-namespace-nautilus
+```
