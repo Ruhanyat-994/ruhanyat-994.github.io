@@ -4965,3 +4965,187 @@ kubectl patch svc iron-gallery-service-nautilus \
 ```bash
 kubectl get all -n iron-namespace-nautilus
 ```
+
+## **Day 64: Fix Python App Deployed on Kubernetes Cluster**
+
+One of the DevOps engineers was trying to deploy a python app on Kubernetes cluster. Unfortunately, due to some mis-configuration, the application is not coming up. Please take a look into it and fix the issues. Application should be accessible on the specified nodePort.  
+
+1. The deployment name is `python-deployment-datacenter`, its using `poroko/flask-demo-app`image. The deployment and service of this app is already deployed.
+2. nodePort should be `32345` and targetPort should be python flask app's default port.  
+
+`Note:` The `kubectl` on `jump_host` has been configured to work with the kubernetes cluster.
+
+
+
+
+### Step 0: Inspect Current Cluster State
+
+```bash
+kubectl get all
+```
+
+Observed output:
+
+```text
+pod/python-deployment-datacenter-6fdb496d59-g4pft   0/1   ImagePullBackOff   0   95s
+
+service/python-service-datacenter   NodePort   10.96.68.190   <none>   8080:32345/TCP   95s
+
+deployment.apps/python-deployment-datacenter   0/1   1   0   95s
+replicaset.apps/python-deployment-datacenter-6fdb496d59   1   1   0   95s
+```
+
+Key observations:
+
+* Pod status was **ImagePullBackOff**
+* Deployment had **0 available replicas**
+* Service existed, but the application was not reachable
+
+At this point, the issue was clearly **not related to networking**, since the pod itself was failing to start.
+
+
+### Step 0.1: Investigate the Pod Failure
+
+To understand why the pod was failing, the pod was described in detail.
+
+```bash
+kubectl describe pod python-deployment-datacenter-6fdb496d59-g4pft
+```
+
+Relevant output:
+
+```text
+Failed to pull image "poroko/flask-app-demo"
+repository does not exist or may require authorization
+Error: ImagePullBackOff
+```
+
+Conclusion:
+
+* `ImagePullBackOff` strongly indicates an **invalid image name, tag, or registry**
+* The image `poroko/flask-app-demo` does **not exist or is inaccessible**
+* This confirmed that the **root cause was the container image**
+
+Once the image issue was identified, the next step was to fix the Deployment configuration.
+
+---
+
+### Step 1: Fix the Deployment Manifest
+
+#### Issue Identified
+
+* Image name was incorrect:
+
+  ```
+  poroko/flask-app-demo   ❌
+  ```
+* Correct image:
+
+  ```
+  poroko/flask-demo-app   ✅
+  ```
+
+#### Corrected Deployment Manifest
+
+Create or update `deployment.yaml`:
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: python-deployment-datacenter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: python_app
+  template:
+    metadata:
+      labels:
+        app: python_app
+    spec:
+      containers:
+        - name: python-container-datacenter
+          image: poroko/flask-demo-app
+          ports:
+            - containerPort: 5000
+```
+
+Explanation:
+
+* `poroko/flask-demo-app` is the valid and accessible image
+* Flask application listens on **port 5000**
+* `containerPort` is defined for clarity and service mapping
+
+---
+
+### Step 2: Fix the Service Manifest
+
+#### Issue Identified
+
+* Service was routing traffic to **8080**
+* Flask app listens on **5000**
+
+### Corrected Service Manifest
+
+Create or update `service.yaml`:
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: python-service-datacenter
+spec:
+  type: NodePort
+  selector:
+    app: python_app
+  ports:
+    - port: 5000
+      targetPort: 5000
+      nodePort: 32345
+```
+
+Explanation:
+
+* `targetPort: 5000` matches Flask’s default port
+* `nodePort: 32345` exposes the app externally as required
+
+
+### Step 3: Apply the Manifests
+
+```bash
+kubectl apply -f deployment.yaml
+kubectl apply -f service.yaml
+```
+
+Expected output:
+
+* Deployment updated
+* Service updated
+
+### Step 4: Verify Resources
+
+```bash
+kubectl get pods
+kubectl get svc python-service-datacenter
+```
+
+Expected state:
+
+* Pod status: `Running`
+* Service: `NodePort 32345`
+
+### Step 5: Verify Application Access
+
+```bash
+kubectl get nodes -o wide
+```
+
+## Troubleshooting  Summary
+
+* `kubectl get all` identified a **pod startup issue**
+* `ImagePullBackOff` immediately pointed to an **image misconfiguration**
+* Fixing the image allowed the pod to reach `Running`
+* Service `targetPort` mismatch prevented traffic from reaching the container
+* Aligning Service and container ports completed the fix
+
