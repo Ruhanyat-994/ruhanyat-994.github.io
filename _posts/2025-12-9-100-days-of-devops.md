@@ -3,6 +3,9 @@ title: "100 Days Of DevOps"
 date: 2025-12-07 03:40:00 +0600
 categories: [DevOps,100-days]
 tags: [Cloud, DevOps]
+image:
+  path: /assets/posts/100Days_post.png
+  alt: 100 days of DevOps
 ---
 <figure style="max-width:720px; margin:0 auto; text-align:center;">
   <img src="../assets/Images/100-days.png"
