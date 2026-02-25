@@ -3,6 +3,8 @@ title: "Hashicorp Vault Configuration and Auto Unsealing using AWS KMS"
 date: 2026-01-31 01:15:00 +0600
 categories: [Cloud_Native,AWS,Security]
 tags: [Cloud, DevOps, AWS,Hashicorp, Security, Encryption]
+  path: /assets/posts/hashicorp-vault.png
+  alt: Hashicorp Vault
 ---
 
 

@@ -3,6 +3,9 @@ title: "Custom Banner in Springboot application"
 date: 2025-09-27 13:42:25 +0600
 categories: [banner,customization]
 tags: [backend, custom-banner, spring-boot]
+image:
+  path: /assets/posts/springBootBanner.png
+  alt: Banner   
 ---
 
 ![alt text](../assets/Images/springBootBanner.png)

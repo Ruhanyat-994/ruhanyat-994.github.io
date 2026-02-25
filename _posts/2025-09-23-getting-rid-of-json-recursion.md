@@ -3,6 +3,9 @@ title: "Getting rid of Json Recursion"
 date: 2025-09-23 00:42:00 +0600
 categories: [software-security, backend, java]
 tags: [json, secure-code, spring-boot]
+image:
+  path: /assets/posts/jsonRecursion.png
+  alt: Json Recursion
 ---
 
 # Ever Fall into Infinite Recursion?

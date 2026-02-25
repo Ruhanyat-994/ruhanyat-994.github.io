@@ -3,6 +3,9 @@ title: "Hands-On Amazon VPC!"
 date: 2025-11-09 03:31:00 +0600
 categories: [Cloud_Native,AWS]
 tags: [Cloud, DevOps, AWS, VPC]
+image:
+  path: /assets/posts/vpc.png
+  alt: VPC  
 ---
 
 # Amazon Virtual Private Cloud (VPC)

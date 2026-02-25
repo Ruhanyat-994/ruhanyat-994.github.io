@@ -3,6 +3,9 @@ title: "Seamless Application Scaling Starts with AWS Elastic Load Balancing"
 date: 2025-11-25 05:11:25 +0600
 categories: [Cloud_Native,AWS]
 tags: [Cloud, DevOps, AWS, ELB, Load-Balancer]
+image:
+  path: /assets/posts/elb_1.jpg
+  alt: Elastic Load Balancer 
 ---
 # Basic Overview
 Load balancing is one of the most important thing to maintain an application so that in a situation when there is a lot of traffic, the application doesn't crash and the business doesn't get disrupted.
