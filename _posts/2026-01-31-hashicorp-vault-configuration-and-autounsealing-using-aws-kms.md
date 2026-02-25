@@ -8,18 +8,6 @@ image:
   alt: Hashicorp Vault
 ---
 
-
-<figure style="max-width:720px; margin:0 auto; text-align:center;">
-  <img src="../assets/Images/hashicorp-vault.png"
-       alt="Hashicorp Vault"
-       style="width:100%; max-width:720px; display:block; margin:0 auto;
-              border-radius:18px; box-shadow:0 8px 24px rgba(0,0,0,0.12);
-              border:1px solid rgba(0,0,0,0.06); object-fit:cover;" />
-  <figcaption style="font-size:0.9rem; color:var(--text-muted,#666); margin-top:8px;">
-    Hashicorp Vault
-  </figcaption>
-</figure>
-
 # Contents
 
 - [1. Introduction](#1-introduction)

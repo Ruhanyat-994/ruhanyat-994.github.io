@@ -8,7 +8,6 @@ image:
   alt: Banner   
 ---
 
-![alt text](../assets/Images/springBootBanner.png)
 
 Your spring boot console banner still looks like this! Man you need to change it immediately to your project name. Don't know how to change?
 

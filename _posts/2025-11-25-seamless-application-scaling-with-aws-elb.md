@@ -12,7 +12,6 @@ Load balancing is one of the most important thing to maintain an application so 
 
 More specifically load balancers are servers that forward internet traffic to multiple servers (EC2 Instances) downstream.
 
-![Basic Load Balancer](../assets/Images/elb_1.jpg)
 
 # ELB (Elastic Load Balancer)
 An ELB (Elastic Load Balancer) is a managed load balancer . And it is managed , maintained and upgrade by `AWS`.

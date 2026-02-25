@@ -8,7 +8,6 @@ image:
   alt: n8n
 ---
 
-![Substack Image](https://substackcdn.com/image/fetch/$s_!-_kO!,w_1456,c_limit,f_webp,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F08d1a8ba-0c6b-46e8-b9ca-d0d5e1521f43_1275x559.png)
 
 # Install Docker and Docker Compose
 
