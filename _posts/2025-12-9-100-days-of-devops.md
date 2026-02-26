@@ -5727,3 +5727,232 @@ Check service endpoints:
 kubectl get endpoints redis-master redis-slave frontend
 ```
 
+---
+
+<figure style="max-width:720px; margin:0 auto; text-align:center;">
+  <img src="../assets/Images/jenkins.png"
+       alt="Jenkins"
+       style="width:100%; max-width:720px; display:block; margin:0 auto;
+              border-radius:18px; box-shadow:0 8px 24px rgba(0,0,0,0.12);
+              border:1px solid rgba(0,0,0,0.06); object-fit:cover;" />
+  <figcaption style="font-size:0.9rem; color:var(--text-muted,#666); margin-top:8px;">
+    Jenkins
+  </figcaption>
+</figure>
+
+## **Day 68: Set Up Jenkins Server**
+
+The DevOps team at xFusionCorp Industries is initiating the setup of CI/CD pipelines and has decided to utilize Jenkins as their server. Execute the task according to the provided requirements:  
+
+1. Install `Jenkins` on the jenkins server using the `yum` utility only, and start its service.
+- If you face a timeout issue while starting the Jenkins service, refer to [this](https://www.jenkins.io/doc/book/system-administration/systemd-services/#starting-services).
+1. Jenkin's admin user name should be `theadmin`, password should be `Adm!n321`, full name should be `Javed` and email should be `javed@jenkins.stratos.xfusioncorp.com`.  
+
+`Note:`
+1. To access the `jenkins` server, connect from the jump host using the `root` user with the password `S3curePass`
+2. After Jenkins server installation, click the `Jenkins` button on the top bar to access the Jenkins UI and follow on-screen instructions to create an admin user.
+
+
+### Step 1: Install Java 11 
+
+Install Java 11:
+
+```bash
+yum install java-11-openjdk
+```
+
+Verify Java installation:
+
+```bash
+java -version
+```
+
+Check Java binary location:
+
+```bash
+which java
+```
+
+### Step 2: Prepare Jenkins Repository
+
+Install `wget` to download the Jenkins repository configuration:
+
+```bash
+sudo yum install wget
+```
+
+Add the Jenkins stable repository:
+
+```bash
+wget -O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins-ci.org/redhat-stable/jenkins.repo
+```
+
+Verify repository file:
+
+```bash
+cat /etc/yum.repos.d/jenkins.repo
+```
+
+Import Jenkins GPG key to allow package verification:
+
+```bash
+rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key
+```
+
+
+### Step 3: Install Jenkins Using yum
+
+Install Jenkins from the configured repository:
+
+```bash
+yum -y install jenkins
+```
+
+Verify Jenkins installation:
+
+```bash
+sudo jenkins --version
+```
+
+At this stage, Jenkins is installed but **cannot start yet**.
+
+
+### Step 4: Attempt to Start Jenkins (Failure with Java 11)
+
+Start the Jenkins service:
+
+```bash
+systemctl start jenkins
+```
+
+Check Jenkins service status:
+
+```bash
+systemctl status jenkins.service
+```
+
+View detailed error logs:
+
+```bash
+journalctl -xeu jenkins.service
+```
+
+#### Issue Identified
+
+Jenkins fails with the error:
+
+> *Running with Java 11, which is older than the minimum required version (Java 17)*
+
+**ReInstall Java:**
+Jenkins version **2.541.x** requires **Java 17 or newer**. Java 11 is no longer supported.
+
+
+
+### Step 5: Install Java 17 (Required Fix)
+
+To resolve the compatibility issue, Java 17 is installed.
+
+```bash
+yum -y install java-17-openjdk java-17-openjdk-devel
+```
+
+Verify Java version:
+
+```bash
+java -version
+```
+
+Expected output shows Java 17.
+
+Verify Jenkins binary again:
+
+```bash
+jenkins -version
+```
+
+Jenkins now detects a supported Java version
+
+### Step 6: Start and Enable Jenkins Successfully
+
+Start Jenkins service again:
+
+```bash
+systemctl start jenkins
+```
+
+Enable Jenkins to start on boot:
+
+```bash
+systemctl enable jenkins
+```
+
+Verify service status:
+
+```bash
+systemctl status jenkins
+```
+
+Jenkins is now **active and running**
+
+
+
+### Step 7: Retrieve Initial Admin Password
+
+To unlock Jenkins for first-time setup, retrieve the initial admin password:
+
+```bash
+cat /var/lib/jenkins/secrets/initialAdminPassword
+```
+
+This password is required on the Jenkins web UI **Unlock Jenkins** screen.
+
+
+<figure style="max-width:720px; margin:0 auto; text-align:center;">
+  <img src="../assets/Images/install-jenkins-pluggin.png"
+       alt="Jenkins"
+       style="width:100%; max-width:720px; display:block; margin:0 auto;
+              border-radius:18px; box-shadow:0 8px 24px rgba(0,0,0,0.12);
+              border:1px solid rgba(0,0,0,0.06); object-fit:cover;" />
+  <figcaption style="font-size:0.9rem; color:var(--text-muted,#666); margin-top:8px;">
+    Jenkins
+  </figcaption>
+</figure>
+
+
+### Step 8: Create Jenkins Admin User (UI Step)
+
+After unlocking Jenkins and installing suggested plugins, create the admin user with **exact required values**:
+
+| Field     | Value                                   |
+| --------- | --------------------------------------- |
+| Username  | `theadmin`                              |
+| Password  | `Adm!n321`                              |
+| Full Name | `Javed`                                 |
+| Email     | `javed@jenkins.stratos.xfusioncorp.com` |
+
+Save and finish setup.
+
+<figure style="max-width:720px; margin:0 auto; text-align:center;">
+  <img src="../assets/Images/putting-jenkins-password.png"
+       alt="Jenkins"
+       style="width:100%; max-width:720px; display:block; margin:0 auto;
+              border-radius:18px; box-shadow:0 8px 24px rgba(0,0,0,0.12);
+              border:1px solid rgba(0,0,0,0.06); object-fit:cover;" />
+  <figcaption style="font-size:0.9rem; color:var(--text-muted,#666); margin-top:8px;">
+    Jenkins
+  </figcaption>
+</figure>
+
+
+Now you will be redirected to jenkins Dashboard
+
+<figure style="max-width:720px; margin:0 auto; text-align:center;">
+  <img src="../assets/Images/jenkins-dashboard.png"
+       alt="Jenkins"
+       style="width:100%; max-width:720px; display:block; margin:0 auto;
+              border-radius:18px; box-shadow:0 8px 24px rgba(0,0,0,0.12);
+              border:1px solid rgba(0,0,0,0.06); object-fit:cover;" />
+  <figcaption style="font-size:0.9rem; color:var(--text-muted,#666); margin-top:8px;">
+    Jenkins
+  </figcaption>
+</figure>
