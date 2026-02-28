@@ -5956,3 +5956,158 @@ Now you will be redirected to jenkins Dashboard
     Jenkins
   </figcaption>
 </figure>
+
+
+## **Day 69: Install Jenkins Plugins**
+
+The Nautilus DevOps team has recently setup a Jenkins server, which they want to use for some CI/CD jobs. Before that they want to install some plugins which will be used in most of the jobs. Please find below more details about the task  
+
+1. Click on the Jenkins button on the top bar to access the Jenkins UI. Login using username `admin` and `Adm!n321` password.  
+2. Once logged in, install the `Git` and `GitLab` plugins. Note that you may need to restart Jenkins service to complete the plugins installation, If required, opt to `Restart Jenkins when installation is complete and no jobs are running` on plugin installation/update page i.e `update centre`.  
+`Note:`  
+3. After restarting the Jenkins service, wait for the Jenkins login page to reappear before proceeding.  
+4. For tasks involving web UI changes, capture screenshots to share for review or consider using screen recording software like loom.com for documentation and sharing.
+
+
+
+### Step 1: Access Jenkins UI
+
+1. Click the **Jenkins** button from the top navigation bar.
+2. The Jenkins login page opens.
+3. Log in using the following credentials:
+
+   * Username: `admin`
+   * Password: `Adm!n321`
+
+<figure style="max-width:720px; margin:0 auto; text-align:center;">
+  <img src="../assets/Images/jenkins_login_page.png"
+       alt="Jenkins login page"
+       style="width:100%; max-width:720px; display:block; margin:0 auto;
+              border-radius:18px; box-shadow:0 8px 24px rgba(0,0,0,0.12);
+              border:1px solid rgba(0,0,0,0.06); object-fit:cover;" />
+  <figcaption style="font-size:0.9rem; color:var(--text-muted,#666); margin-top:8px;">
+    Jenkins Login Page
+  </figcaption>
+</figure>
+
+
+### Step 2: Jenkins Dashboard
+
+1. After successful login, the Jenkins dashboard is displayed.
+2. Confirm that the dashboard loads without errors.
+
+<figure style="max-width:720px; margin:0 auto; text-align:center;">
+  <img src="../assets/Images/jenkins_dashboard.png"
+       alt="Jenkins Dashboard"
+       style="width:100%; max-width:720px; display:block; margin:0 auto;
+              border-radius:18px; box-shadow:0 8px 24px rgba(0,0,0,0.12);
+              border:1px solid rgba(0,0,0,0.06); object-fit:cover;" />
+  <figcaption style="font-size:0.9rem; color:var(--text-muted,#666); margin-top:8px;">
+    Jenkins Dashboard
+  </figcaption>
+</figure>
+
+
+## Step 3: Navigate to Manage Jenkins
+
+1. From the left-hand menu, click **Manage Jenkins**.
+
+<figure style="max-width:720px; margin:0 auto; text-align:center;">
+  <img src="../assets/Images/jenkins_manage.png"
+       alt="Jenkins Manage Page"
+       style="width:100%; max-width:720px; display:block; margin:0 auto;
+              border-radius:18px; box-shadow:0 8px 24px rgba(0,0,0,0.12);
+              border:1px solid rgba(0,0,0,0.06); object-fit:cover;" />
+  <figcaption style="font-size:0.9rem; color:var(--text-muted,#666); margin-top:8px;">
+    Jenkins Manage
+  </figcaption>
+</figure>
+
+
+## Step 4: Open Plugin Manager
+
+1. On the Manage Jenkins page, click **Manage Plugins**.
+
+
+
+## Step 5: Open Available Plugins Tab
+
+1. Scroll down and find pluggins
+2. Click the Avialable pluggins button
+
+
+<figure style="max-width:720px; margin:0 auto; text-align:center;">
+  <img src="../assets/Images/jenkins_pluggin.png"
+       alt="Jenkins Pluggins Available"
+       style="width:100%; max-width:720px; display:block; margin:0 auto;
+              border-radius:18px; box-shadow:0 8px 24px rgba(0,0,0,0.12);
+              border:1px solid rgba(0,0,0,0.06); object-fit:cover;" />
+  <figcaption style="font-size:0.9rem; color:var(--text-muted,#666); margin-top:8px;">
+    Jenkins Pluggins Available
+  </figcaption>
+</figure>
+
+
+
+## Step 6: Search and Select Git Plugin
+
+1. In the search field, type `Git`.
+2. Select the checkbox for **Git Plugin**.
+
+
+## Step 7: Search and Select GitLab Plugin
+
+1. Clear the search field and type `GitLab`.
+2. Select the checkbox for **GitLab Plugin**.
+
+
+<figure style="max-width:720px; margin:0 auto; text-align:center;">
+  <img src="../assets/Images/jenkins_install_pluggin.png"
+       alt="Jenkins Install Pluggins"
+       style="width:100%; max-width:720px; display:block; margin:0 auto;
+              border-radius:18px; box-shadow:0 8px 24px rgba(0,0,0,0.12);
+              border:1px solid rgba(0,0,0,0.06); object-fit:cover;" />
+  <figcaption style="font-size:0.9rem; color:var(--text-muted,#666); margin-top:8px;">
+    Jenkins Install Pluggins
+  </figcaption>
+</figure>
+
+
+## Step 8: Install Plugins
+
+1. Click **Install without restart** or **Download now and install after restart**.
+2. If prompted, select **Restart Jenkins when installation is complete and no jobs are running**.
+
+
+
+
+## Step 9: Jenkins Restart
+
+1. Jenkins restarts automatically.
+2. Wait for the Jenkins login page to reappear before proceeding.
+
+
+<figure style="max-width:720px; margin:0 auto; text-align:center;">
+  <img src="../assets/Images/jenkins_restart.png"
+       alt="Jenkins restart"
+       style="width:100%; max-width:720px; display:block; margin:0 auto;
+              border-radius:18px; box-shadow:0 8px 24px rgba(0,0,0,0.12);
+              border:1px solid rgba(0,0,0,0.06); object-fit:cover;" />
+  <figcaption style="font-size:0.9rem; color:var(--text-muted,#666); margin-top:8px;">
+    Jenkins Restart
+  </figcaption>
+</figure>
+
+
+## Step 10: Verify Plugin Installation
+
+1. Log in again using `admin / Adm!n321`.
+2. Navigate to **Manage Jenkins → Manage Plugins → Installed**.
+3. Verify that the following plugins are listed:
+
+   * Git Plugin
+   * GitLab Plugin
+
+
+
+
