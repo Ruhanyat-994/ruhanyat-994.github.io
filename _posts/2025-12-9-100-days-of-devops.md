@@ -6110,4 +6110,204 @@ The Nautilus DevOps team has recently setup a Jenkins server, which they want to
 
 
 
+## **Day 70: Configure Jenkins User Access**
+
+The Nautilus team is integrating Jenkins into their CI/CD pipelines. After setting up a new Jenkins server, they're now configuring user access for the development team, Follow these steps:  
+  
+1. Click on the `Jenkins` button on the top bar to access the Jenkins UI. Login with username `admin` and password `Adm!n321`
+2. Create a jenkins user named `kareem` with the password`Rc5C9EyvbU`. Their full name should match `Kareem`.  
+3. Utilize the `Project-based Matrix Authorization Strategy` to assign `overall read` permission to the `kareem` user.  
+4. Remove all permissions for `Anonymous` users (if any) ensuring that the `admin` user retains overall `Administer` permissions.  
+5. For the existing job, grant `kareem` user only `read` permissions, disregarding other permissions such as Agent, SCM etc.  
+
+`Note:`  
+2. You may need to install plugins and restart Jenkins service. After plugins installation, select `Restart Jenkins when installation is complete and no jobs are running` on plugin installation/update page.  
+3. After restarting the Jenkins service, wait for the Jenkins login page to reappear before proceeding. Avoid clicking `Finish` immediately after restarting the service.  
+4. Capture screenshots of your configuration for review purposes. Consider using screen recording software like `loom.com` for documentation and sharing.
+
+
+### Step 1: Login to Jenkins
+
+1. Click on the **Jenkins** button on the top bar.
+2. Login using the following credentials:
+
+   * Username: `admin`
+   * Password: `Adm!n321`
+
+<figure style="max-width:720px; margin:0 auto; text-align:center;">
+  <img src="../assets/Images/jenkins_login_page.png"
+       alt="Jenkins Login"
+       style="width:100%; max-width:720px; display:block; margin:0 auto;
+              border-radius:18px; box-shadow:0 8px 24px rgba(0,0,0,0.12);
+              border:1px solid rgba(0,0,0,0.06); object-fit:cover;" />
+  <figcaption style="font-size:0.9rem; color:var(--text-muted,#666); margin-top:8px;">
+    Jenkins Login
+  </figcaption>
+</figure>
+
+
+### Step 2: Create User kareem
+
+1. From the dashboard, click **Manage Jenkins**.
+2. Click **Users**.
+
+
+<figure style="max-width:720px; margin:0 auto; text-align:center;">
+  <img src="../assets/Images/jenkins_user.png"
+       alt="Jenkins User"
+       style="width:100%; max-width:720px; display:block; margin:0 auto;
+              border-radius:18px; box-shadow:0 8px 24px rgba(0,0,0,0.12);
+              border:1px solid rgba(0,0,0,0.06); object-fit:cover;" />
+  <figcaption style="font-size:0.9rem; color:var(--text-muted,#666); margin-top:8px;">
+    Jenkins User
+  </figcaption>
+</figure>
+
+3. Click **Create User**.
+4. Fill in the following details:
+
+   * Username: `kareem`
+   * Password: `Rc5C9EyvbU`
+   * Confirm Password: `Rc5C9EyvbU`
+   * Full Name: `Kareem`
+   * Email: (optional)
+
+  <figure style="max-width:720px; margin:0 auto; text-align:center;">
+  <img src="../assets/Images/jenkins_user_fillup.png"
+       alt="Jenkins User"
+       style="width:100%; max-width:720px; display:block; margin:0 auto;
+              border-radius:18px; box-shadow:0 8px 24px rgba(0,0,0,0.12);
+              border:1px solid rgba(0,0,0,0.06); object-fit:cover;" />
+  <figcaption style="font-size:0.9rem; color:var(--text-muted,#666); margin-top:8px;">
+    Jenkins User
+  </figcaption>
+</figure>
+
+5. Click **Create User**.
+
+<figure style="max-width:720px; margin:0 auto; text-align:center;">
+  <img src="../assets/Images/jenkins_user_created.png"
+       alt="Jenkins User"
+       style="width:100%; max-width:720px; display:block; margin:0 auto;
+              border-radius:18px; box-shadow:0 8px 24px rgba(0,0,0,0.12);
+              border:1px solid rgba(0,0,0,0.06); object-fit:cover;" />
+  <figcaption style="font-size:0.9rem; color:var(--text-muted,#666); margin-top:8px;">
+    Jenkins User
+  </figcaption>
+</figure>
+
+
+
+### Step 3: Enable Project-based Matrix Authorization Strategy
+
+If the plugin is not installed:
+
+1. Go to **Manage Jenkins**.
+2. Click **Plugins**.
+3. Search for **Matrix Authorization Strategy**.
+4. Install the plugin.
+
+<figure style="max-width:720px; margin:0 auto; text-align:center;">
+  <img src="../assets/Images/jenkins_matrix_pluggin.png"
+       alt="Jenkins Matrix Plugging Install"
+       style="width:100%; max-width:720px; display:block; margin:0 auto;
+              border-radius:18px; box-shadow:0 8px 24px rgba(0,0,0,0.12);
+              border:1px solid rgba(0,0,0,0.06); object-fit:cover;" />
+  <figcaption style="font-size:0.9rem; color:var(--text-muted,#666); margin-top:8px;">
+    Jenkins Matrix Plugging Install
+  </figcaption>
+</figure>
+
+
+5. Select **Restart Jenkins when installation is complete and no jobs are running**.
+6. Wait for Jenkins to restart fully and return to the login page before proceeding.
+
+
+Now configure authorization:
+
+1. Go to **Manage Jenkins**.
+2. Click **Security**.
+3. Under **Authorization**, select **Project-based Matrix Authorization Strategy**.
+
+<figure style="max-width:720px; margin:0 auto; text-align:center;">
+  <img src="../assets/Images/jenkins_security.png"
+       alt="Jenkins Security"
+       style="width:100%; max-width:720px; display:block; margin:0 auto;
+              border-radius:18px; box-shadow:0 8px 24px rgba(0,0,0,0.12);
+              border:1px solid rgba(0,0,0,0.06); object-fit:cover;" />
+  <figcaption style="font-size:0.9rem; color:var(--text-muted,#666); margin-top:8px;">
+    Jenkins Security
+  </figcaption>
+</figure>
+
+
+### Step 4: Configure Global Permissions
+
+1. In the permission matrix table, click **Add User**.
+
+2. Enter `kareem` and add the user.
+
+3. For kareem, check only:
+
+   * Read
+
+<figure style="max-width:720px; margin:0 auto; text-align:center;">
+  <img src="../assets/Images/jenkins_read.png"
+       alt="Jenkins Read"
+       style="width:100%; max-width:720px; display:block; margin:0 auto;
+              border-radius:18px; box-shadow:0 8px 24px rgba(0,0,0,0.12);
+              border:1px solid rgba(0,0,0,0.06); object-fit:cover;" />
+  <figcaption style="font-size:0.9rem; color:var(--text-muted,#666); margin-top:8px;">
+    Jenkins Read
+  </figcaption>
+</figure>
+
+4. Locate the **Anonymous** user in the table.
+
+5. Uncheck all permissions for Anonymous.
+
+6. Ensure the **admin** user has:
+
+   * Overall → Administer
+
+7. Click **Save**.
+
+
+
+### Step 5: Configure Job-Level Permissions for kareem
+
+1. From the dashboard, click the existing job (Helloworld).
+
+
+<figure style="max-width:720px; margin:0 auto; text-align:center;">
+  <img src="../assets/Images/jenkins_job.png"
+       alt="Jenkins Job"
+       style="width:100%; max-width:720px; display:block; margin:0 auto;
+              border-radius:18px; box-shadow:0 8px 24px rgba(0,0,0,0.12);
+              border:1px solid rgba(0,0,0,0.06); object-fit:cover;" />
+  <figcaption style="font-size:0.9rem; color:var(--text-muted,#666); margin-top:8px;">
+    Jenkins Job
+  </figcaption>
+</figure>
+
+2. Click **Configure** from the left sidebar.
+
+3. Scroll down and check **Enable project-based security**.
+
+4. Click **Add User** and enter `kareem`.
+
+5. For kareem, check only:
+
+   * Job → Read
+
+6. Do not enable any other permissions such as:
+
+   * Build
+   * Configure
+   * Delete
+   * Workspace
+   * Agent
+   * SCM
+
+7. Click **Save**.
 
