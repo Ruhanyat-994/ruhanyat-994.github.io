@@ -6578,7 +6578,6 @@ nano
 
 ---
 
-# Verify Installation
 
 ### Step 10: Confirm Package Installation
 
