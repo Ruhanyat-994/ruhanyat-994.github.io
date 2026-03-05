@@ -6311,3 +6311,302 @@ Now configure authorization:
 
 7. Click **Save**.
 
+## **Day 71: Configure Jenkins Job for Package Installation**
+
+Some new requirements have come up to install and configure some packages on the Nautilus infrastructure under Stratos Datacenter. The Nautilus DevOps team installed and configured a new Jenkins server so they wanted to create a Jenkins job to automate this task. Find below more details and complete the task accordingly:  
+  
+1. Access the Jenkins UI by clicking on the `Jenkins` button in the top bar. Log in using the credentials: username `admin` and password `Adm!n321`.  
+2. Create a new Jenkins job named `install-packages` and configure it with the following specifications:  
+  
+- Add a string parameter named `PACKAGE`.
+- Configure the job to install a package specified in the `$PACKAGE` parameter on the `storage server` within the `Stratos Datacenter`.  
+
+`Note`:  
+
+1. Ensure to install any required plugins and restart the Jenkins service if necessary. Opt for `Restart Jenkins when installation is complete and no jobs are running` on the plugin installation/update page. Refresh the UI page if needed after restarting the service.  
+2. Verify that the Jenkins job runs successfully on repeated executions to ensure reliability.  
+3. Capture screenshots of your configuration for documentation and review purposes. Alternatively, use screen recording software like `loom.com` for comprehensive documentation and sharing.
+
+
+### Step 1: Verify Package Status on the Storage Server
+
+Before creating the Jenkins job, first verify whether the package you want to install already exists on the storage server.
+
+1. SSH into the storage server using the provided credentials.
+
+```bash
+ssh natasha@172.16.238.15
+```
+
+2. Enter the password when prompted:
+
+```
+Bl@kW
+```
+
+3. Check if the package (example: `nano`) is installed.
+
+```bash
+nano
+```
+
+If the package is **not installed**, you will see an output similar to:
+
+```
+package nano is not installed
+```
+
+This confirms the Jenkins job will install it successfully.
+
+<figure style="max-width:720px; margin:0 auto; text-align:center;">
+  <img src="../assets/Images/nano_not_install.png"
+       alt="Package Check on Storage Server"
+       style="width:100%; max-width:720px; display:block; margin:0 auto;
+              border-radius:18px; box-shadow:0 8px 24px rgba(0,0,0,0.12);
+              border:1px solid rgba(0,0,0,0.06); object-fit:cover;" />
+  <figcaption style="font-size:0.9rem; color:var(--text-muted,#666); margin-top:8px;">
+    Checking whether nano is installed on the storage server
+  </figcaption>
+</figure>
+
+
+### Step 2: Login to Jenkins
+
+1. Click on the **Jenkins** button on the top bar.
+2. Login using the following credentials:
+
+* Username: `admin`
+* Password: `Adm!n321`
+
+<figure style="max-width:720px; margin:0 auto; text-align:center;">
+  <img src="../assets/Images/jenkins_login_page.png"
+       alt="Jenkins Login"
+       style="width:100%; max-width:720px; display:block; margin:0 auto;
+              border-radius:18px; box-shadow:0 8px 24px rgba(0,0,0,0.12);
+              border:1px solid rgba(0,0,0,0.06); object-fit:cover;" />
+  <figcaption style="font-size:0.9rem; color:var(--text-muted,#666); margin-top:8px;">
+    Jenkins Login Page
+  </figcaption>
+</figure>
+
+
+### Step 3: Install SSH Plugin
+
+To allow Jenkins to execute commands on remote servers, install the SSH plugin.
+
+1. From the Jenkins dashboard, click **Manage Jenkins**.
+2. Click **Plugins**.
+3. Search for **SSH Plugin**.
+4. Install the plugin.
+
+5. Select **Restart Jenkins when installation is complete and no jobs are running**.
+
+<figure style="max-width:720px; margin:0 auto; text-align:center;">
+  <img src="../assets/Images/jenkins_ssh.png"
+       alt="SSH Plugin Install"
+       style="width:100%; max-width:720px; display:block; margin:0 auto;
+              border-radius:18px; box-shadow:0 8px 24px rgba(0,0,0,0.12);
+              border:1px solid rgba(0,0,0,0.06); object-fit:cover;" />
+  <figcaption style="font-size:0.9rem; color:var(--text-muted,#666); margin-top:8px;">
+    Installing SSH Plugin
+  </figcaption>
+</figure>
+
+
+### Step 4: Add Natasha Credentials
+
+1. Go to **Manage Jenkins**.
+2. Click **Credentials**.
+3. Select **Global** credentials domain.
+4. Click **Add Credentials**.
+5. Fill in the following details:
+
+* Kind: **Username with password**
+* Username: `natasha`
+* Password: `Bl@kW`
+
+
+<figure style="max-width:720px; margin:0 auto; text-align:center;">
+  <img src="../assets/Images/jenkins_natasha_cred.png"
+       alt="Jenkins Credentials"
+       style="width:100%; max-width:720px; display:block; margin:0 auto;
+              border-radius:18px; box-shadow:0 8px 24px rgba(0,0,0,0.12);
+              border:1px solid rgba(0,0,0,0.06); object-fit:cover;" />
+  <figcaption style="font-size:0.9rem; color:var(--text-muted,#666); margin-top:8px;">
+    Jenkins Credentials Page
+  </figcaption>
+</figure>
+
+
+
+### Step 5: Configure SSH Remote Host
+
+1. Go to **Manage Jenkins**.
+2. Click **System**.
+3. Scroll to the **Publish over SSH** section.
+4. Click **Add** under **SSH Servers**.
+
+Fill in the following details:
+
+* Name: `storage-server`
+* Hostname: `172.16.238.15`
+* Username: `natasha`
+* Password: `Bl@kW`
+
+<figure style="max-width:720px; margin:0 auto; text-align:center;">
+  <img src="../assets/Images/jenkins_pub_ssh.png"
+       alt="Configure SSH Server"
+       style="width:100%; max-width:720px; display:block; margin:0 auto;
+              border-radius:18px; box-shadow:0 8px 24px rgba(0,0,0,0.12);
+              border:1px solid rgba(0,0,0,0.06); object-fit:cover;" />
+  <figcaption style="font-size:0.9rem; color:var(--text-muted,#666); margin-top:8px;">
+    Configuring Storage Server SSH Access
+  </figcaption>
+</figure>
+
+Click **Save**.
+
+
+### Step 6: Create a New Job
+
+1. From the Jenkins dashboard, click **New Item**.
+2. Enter the job name:
+
+```
+install-packages
+```
+
+3. Select **Freestyle Project**.
+4. Click **OK**.
+
+<figure style="max-width:720px; margin:0 auto; text-align:center;">
+  <img src="../assets/Images/jenkins_new_job.png"
+       alt="Create Jenkins Job"
+       style="width:100%; max-width:720px; display:block; margin:0 auto;
+              border-radius:18px; box-shadow:0 8px 24px rgba(0,0,0,0.12);
+              border:1px solid rgba(0,0,0,0.06); object-fit:cover;" />
+  <figcaption style="font-size:0.9rem; color:var(--text-muted,#666); margin-top:8px;">
+    Creating the install-packages Job
+  </figcaption>
+</figure>
+
+
+### Step 7: Add Parameter for Package Name
+
+1. Scroll to **This project is parameterized**.
+2. Enable the checkbox.
+3. Click **Add Parameter**.
+4. Select **String Parameter**.
+
+Configure it as follows:
+
+* Name: `PACKAGE`
+* Default Value: *(leave empty)*
+* Description: `Enter the package name to install`
+
+<figure style="max-width:720px; margin:0 auto; text-align:center;">
+  <img src="../assets/Images/jenkins_string_parameter.png"
+       alt="String Parameter"
+       style="width:100%; max-width:720px; display:block; margin:0 auto;
+              border-radius:18px; box-shadow:0 8px 24px rgba(0,0,0,0.12);
+              border:1px solid rgba(0,0,0,0.06); object-fit:cover;" />
+  <figcaption style="font-size:0.9rem; color:var(--text-muted,#666); margin-top:8px;">
+    Adding PACKAGE parameter
+  </figcaption>
+</figure>
+
+
+### Step 8: Add Remote SSH Command
+
+1. Scroll to **Build**.
+2. Click **Add Build Step**.
+3. Select **Send build artifacts over SSH**.
+
+Inside the **Exec Command** section, add the following command:
+
+```bash
+echo 'Bl@kW' | sudo -S yum install -y $PACKAGE
+```
+
+Explanation:
+
+* `echo 'Bl@kW'` → provides the sudo password
+* `sudo -S` → allows sudo to read the password from standard input
+* `yum install -y` → installs the package automatically
+* `$PACKAGE` → Jenkins parameter passed during job execution
+
+<figure style="max-width:720px; margin:0 auto; text-align:center;">
+  <img src="../assets/Images/jenkins_build_step.png"
+       alt="Jenkins Build Step"
+       style="width:100%; max-width:720px; display:block; margin:0 auto;
+              border-radius:18px; box-shadow:0 8px 24px rgba(0,0,0,0.12);
+              border:1px solid rgba(0,0,0,0.06); object-fit:cover;" />
+  <figcaption style="font-size:0.9rem; color:var(--text-muted,#666); margin-top:8px;">
+    Jenkins Build Step to Install Package
+  </figcaption>
+</figure>
+
+Click **Save**.
+
+
+
+### Step 9: Execute Jenkins Job
+
+1. Open the **install-packages** job.
+2. Click **Build with Parameters**.
+
+<figure style="max-width:720px; margin:0 auto; text-align:center;">
+  <img src="../assets/Images/jenkins_build_with_parameters.png"
+       alt="Build With Parameters"
+       style="width:100%; max-width:720px; display:block; margin:0 auto;
+              border-radius:18px; box-shadow:0 8px 24px rgba(0,0,0,0.12);
+              border:1px solid rgba(0,0,0,0.06); object-fit:cover;" />
+  <figcaption style="font-size:0.9rem; color:var(--text-muted,#666); margin-top:8px;">
+    Running Jenkins Job with Parameters
+  </figcaption>
+</figure>
+
+
+
+3. Enter the package name:
+
+```
+nano
+```
+
+4. Click **Build**.
+
+---
+
+# Verify Installation
+
+### Step 10: Confirm Package Installation
+
+SSH into the storage server again and verify that the package has been installed.
+
+```bash
+ssh natasha@172.16.238.15
+```
+
+Check the package:
+
+```bash
+nano --version
+```
+
+Expected output:
+
+```
+nano-x.x.x installed
+```
+
+<figure style="max-width:720px; margin:0 auto; text-align:center;">
+  <img src="../assets/Images/package_installed_confirmation.png"
+       alt="Package Installed"
+       style="width:100%; max-width:720px; display:block; margin:0 auto;
+              border-radius:18px; box-shadow:0 8px 24px rgba(0,0,0,0.12);
+              border:1px solid rgba(0,0,0,0.06); object-fit:cover;" />
+  <figcaption style="font-size:0.9rem; color:var(--text-muted,#666); margin-top:8px;">
+    Confirming Nano Installation on Storage Server
+  </figcaption>
+</figure>
