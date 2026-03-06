@@ -6609,3 +6609,161 @@ nano-x.x.x installed
     Confirming Nano Installation on Storage Server
   </figcaption>
 </figure>
+
+
+
+## **Day 72: Jenkins Parameterized Builds**
+
+A new DevOps Engineer has joined the team and he will be assigned some Jenkins related tasks. Before that, the team wanted to test a simple parameterized job to understand basic functionality of parameterized builds. He is given a simple parameterized job to build in Jenkins. Please find more details below:  
+Click on the `Jenkins` button on the top bar to access the Jenkins UI. Login using username `admin` and password `Adm!n321`.  
+  
+1. Create a `parameterized` job which should be named as `parameterized-job`  
+2. Add a `string` parameter named `Stage`; its default value should be `Build`.  
+3. Add a `choice` parameter named `env`; its choices should be `Development`, `Staging` and `Production`.  
+4. Configure job to execute a shell command, which should echo both parameter values (you are passing in the job).  
+5. Build the Jenkins job at least once with choice parameter value `Production` to make sure it passes.  
+
+`Note:`  
+1. You might need to install some plugins and restart Jenkins service. So, we recommend clicking on `Restart Jenkins when installation is complete and no jobs are running` on plugin installation/update page i.e `update centre`. Also, Jenkins UI sometimes gets stuck when Jenkins service restarts in the back end. In this case, please make sure to refresh the UI page.  
+2. For these kind of scenarios requiring changes to be done in a web UI, please take screenshots so that you can share it with us for review in case your task is marked incomplete. You may also consider using a screen recording software such as loom.com to record and share your work.
+
+
+### Step 1: Login to Jenkins
+
+1. Click on the **Jenkins** button on the top bar.
+2. Login using the following credentials:
+
+* Username: `admin`
+* Password: `Adm!n321`
+
+<figure style="max-width:720px; margin:0 auto; text-align:center;">
+  <img src="../assets/Images/jenkins_login_page.png"
+       alt="Jenkins Login"
+       style="width:100%; max-width:720px; display:block; margin:0 auto;
+              border-radius:18px; box-shadow:0 8px 24px rgba(0,0,0,0.12);
+              border:1px solid rgba(0,0,0,0.06); object-fit:cover;" />
+  <figcaption style="font-size:0.9rem; color:var(--text-muted,#666); margin-top:8px;">
+    Jenkins Login Page
+  </figcaption>
+</figure>
+
+### Step 2: Create a New Jenkins Job
+
+1. From the Jenkins dashboard, click **New Item**.
+2. Enter the job name:
+
+```
+parameterized-job
+```
+
+3. Select **Freestyle Project**.
+4. Click **OK**.
+
+### Step 3: Enable Parameterized Build
+
+1. Inside the job configuration page, scroll to **General** section.
+2. Check the option:
+
+```
+This project is parameterized
+```
+
+### Step 4: Add String Parameter
+
+1. Click **Add Parameter**.
+2. Select **String Parameter**.
+3. Configure the following values:
+
+* Name: `Stage`
+* Default Value: `Build`
+
+This parameter will allow users to define the pipeline stage dynamically.
+
+<figure style="max-width:720px; margin:0 auto; text-align:center;">
+  <img src="../assets/Images/jenkins_enable_parameterized.png"
+       alt="String Parameter Stage"
+       style="width:100%; max-width:720px; display:block; margin:0 auto;
+              border-radius:18px; box-shadow:0 8px 24px rgba(0,0,0,0.12);
+              border:1px solid rgba(0,0,0,0.06); object-fit:cover;" />
+  <figcaption style="font-size:0.9rem; color:var(--text-muted,#666); margin-top:8px;">
+    Adding Stage string parameter
+  </figcaption>
+</figure>
+
+### Step 5: Add Choice Parameter
+
+1. Click **Add Parameter** again.
+2. Select **Choice Parameter**.
+3. Configure the following values:
+
+* Name: `env`
+* Choices:
+
+```
+Development
+Staging
+Production
+```
+
+This allows the job to run in different environments.
+
+<figure style="max-width:720px; margin:0 auto; text-align:center;">
+  <img src="../assets/Images/jenkins_enable_parameterized.png"
+       alt="Choice Parameter Env"
+       style="width:100%; max-width:720px; display:block; margin:0 auto;
+              border-radius:18px; box-shadow:0 8px 24px rgba(0,0,0,0.12);
+              border:1px solid rgba(0,0,0,0.06); object-fit:cover;" />
+  <figcaption style="font-size:0.9rem; color:var(--text-muted,#666); margin-top:8px;">
+    Adding env choice parameter
+  </figcaption>
+</figure>
+
+### Step 6: Configure Build Step
+
+1. Scroll down to the **Build** section.
+2. Click **Add Build Step**.
+3. Select **Execute Shell**.
+4. Add the following shell command:
+
+```bash
+echo $Stage $env
+```
+
+Click **Save**.
+
+### Step 7: Build the Job with Parameters
+
+1. From the Jenkins dashboard, open the **parameterized-job**.
+2. Click **Build with Parameters**.
+3. Select the following values:
+
+* Stage: `Build`
+* env: `Production`
+
+4. Click **Build**.
+
+### Step 8: Verify Build Output
+
+1. Click the **latest build number**.
+2. Select **Console Output**.
+3. Verify that Jenkins prints the parameter values correctly.
+
+Example output:
+
+```
+Stage: Build
+Environment: Production
+Finished: SUCCESS
+```
+
+<figure style="max-width:720px; margin:0 auto; text-align:center;">
+  <img src="../assets/Images/jenkins_console_output_parameters.png"
+       alt="Console Output Parameters"
+       style="width:100%; max-width:720px; display:block; margin:0 auto;
+              border-radius:18px; box-shadow:0 8px 24px rgba(0,0,0,0.12);
+              border:1px solid rgba(0,0,0,0.06); object-fit:cover;" />
+  <figcaption style="font-size:0.9rem; color:var(--text-muted,#666); margin-top:8px;">
+    Console output showing Stage and Environment values
+  </figcaption>
+</figure>
+
