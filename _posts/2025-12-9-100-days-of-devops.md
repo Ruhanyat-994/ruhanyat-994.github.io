@@ -6767,3 +6767,230 @@ Finished: SUCCESS
   </figcaption>
 </figure>
 
+
+
+## **Day 73: Jenkins Scheduled Jobs**
+
+The devops team of xFusionCorp Industries is working on to setup centralised logging management system to maintain and analyse server logs easily. Since it will take some time to implement, they wanted to gather some server logs on a regular basis. At least one of the app servers is having issues with the Apache server. The team needs Apache logs so that they can identify and troubleshoot the issues easily if they arise. So they decided to create a Jenkins job to collect logs from the server. Please create/configure a Jenkins job as per details mentioned below:  
+
+Click on the `Jenkins` button on the top bar to access the Jenkins UI. Login using username `admin` and password `Adm!n321`  
+1. Create a Jenkins jobs named `copy-logs`.  
+2. Configure it to periodically build `every 12 minutes` to copy the Apache logs (both `access_log` and `error_log`) from **App Server 3** (stapp03) from the default logs location to location `/usr/src/itadmin` on the Storage Server.  
+3. Build the job at least once so that the logs are copied and can be verified.  
+
+`Note:`  
+4. You might need to install some plugins and restart Jenkins. We recommend selecting `Restart Jenkins when installation is complete and no jobs are running` in the update centre. Refresh the page if the UI gets stuck after a restart.  
+5. Define the cron expression as required (e.g. `*/10 * * * *` to run every 10 minutes).  
+6. For scenarios that require web UI changes, take screenshots or record your work (e.g. using loom.com) so you can share it for review if the task is marked incomplete.
+
+
+### Step 1: Login to Jenkins
+
+1. Click on the **Jenkins** button on the top bar.
+2. Login using the following credentials:
+
+* Username: `admin`
+* Password: `Adm!n321`
+
+<figure style="max-width:720px; margin:0 auto; text-align:center;">
+  <img src="../assets/Images/jenkins_login_page.png"
+       alt="Jenkins Login"
+       style="width:100%; max-width:720px; display:block; margin:0 auto;
+              border-radius:18px; box-shadow:0 8px 24px rgba(0,0,0,0.12);
+              border:1px solid rgba(0,0,0,0.06); object-fit:cover;" />
+  <figcaption style="font-size:0.9rem; color:var(--text-muted,#666); margin-top:8px;">
+    Jenkins Login Page
+  </figcaption>
+</figure>
+
+
+### Step 2: Setup Passwordless SSH Access
+
+To allow Jenkins to copy logs between servers automatically, we first configure **SSH key-based authentication**.
+
+#### Generate SSH Key
+
+```bash
+ssh-keygen -t rsa -b 2048
+```
+
+Press **Enter** for all prompts to generate the key.
+
+#### Copy SSH Key to App Server 3
+
+```bash
+ssh-copy-id banner@stapp03
+```
+
+Verify the connection:
+
+```bash
+ssh banner@stapp03
+```
+
+#### Copy SSH Key to Storage Server
+
+```bash
+ssh-copy-id natasha@ststor01.stratos.xfusioncorp.com
+```
+
+or
+
+```bash
+ssh-copy-id natasha@ststor01
+```
+
+Verify connection:
+
+```bash
+ssh natasha@ststor01
+```
+
+### Step 3: Create a New Jenkins Job
+
+1. From the Jenkins dashboard click **New Item**.
+2. Enter the job name:
+
+```
+copy-logs
+```
+
+3. Select **Freestyle Project**.
+4. Click **OK**.
+
+<figure style="max-width:720px; margin:0 auto; text-align:center;">
+  <img src="../assets/Images/jenkins_jobs_creation.png"
+       alt="Create Jenkins Job"
+       style="width:100%; max-width:720px; display:block; margin:0 auto;
+              border-radius:18px; box-shadow:0 8px 24px rgba(0,0,0,0.12);
+              border:1px solid rgba(0,0,0,0.06); object-fit:cover;" />
+  <figcaption style="font-size:0.9rem; color:var(--text-muted,#666); margin-top:8px;">
+    Creating Jenkins Job copy-logs
+  </figcaption>
+</figure>
+
+
+### Step 4: Configure Periodic Build
+
+Since the team needs logs regularly, configure Jenkins to run the job **every 12 minutes**.
+
+1. Scroll to **Build Triggers**.
+2. Enable:
+
+```
+Build periodically
+```
+
+3. Add the following cron expression:
+
+```
+*/12 * * * *
+```
+
+This will execute the job every **12 minutes**.
+
+### Step 5: Add Build Steps to Copy Apache Logs
+
+Inside the **Build** section:
+
+1. Click **Add Build Step**
+2. Select:
+
+```
+Execute Shell
+```
+
+3. Add the following commands.
+
+#### Copy Logs from App Server
+
+```bash
+scp banner@stapp03:/var/log/httpd/access_log .
+scp banner@stapp03:/var/log/httpd/error_log .
+```
+
+#### Transfer Logs to Storage Server
+
+```bash
+scp access_log error_log natasha@ststor01:/usr/src/itadmin
+```
+<figure style="max-width:720px; margin:0 auto; text-align:center;">
+  <img src="../assets/Images/jenkins_schedule.png"
+       alt="Build periodically configuration"
+       style="width:100%; max-width:720px; display:block; margin:0 auto;
+              border-radius:18px; box-shadow:0 8px 24px rgba(0,0,0,0.12);
+              border:1px solid rgba(0,0,0,0.06); object-fit:cover;" />
+  <figcaption style="font-size:0.9rem; color:var(--text-muted,#666); margin-top:8px;">
+    Configuring periodic build trigger
+  </figcaption>
+</figure>
+
+
+### Step 6: Prepare Destination Directory on Storage Server
+
+Login to the storage server and create the destination directory.
+
+```bash
+ssh natasha@ststor01
+```
+
+Create directory:
+
+```bash
+mkdir /usr/src/itadmin
+```
+
+Navigate to the directory:
+
+```bash
+cd /usr/src/itadmin
+```
+
+
+### Step 7: Build the Jenkins Job
+
+Now run the job manually once.
+
+1. Open the **copy-logs** job.
+2. Click:
+
+```
+Build Now
+```
+
+This will execute the shell commands and copy the logs.
+
+<figure style="max-width:720px; margin:0 auto; text-align:center;">
+  <img src="../assets/Images/jenkins_jobs_response.png"
+       alt="Run Jenkins build"
+       style="width:100%; max-width:720px; display:block; margin:0 auto;
+              border-radius:18px; box-shadow:0 8px 24px rgba(0,0,0,0.12);
+              border:1px solid rgba(0,0,0,0.06); object-fit:cover;" />
+  <figcaption style="font-size:0.9rem; color:var(--text-muted,#666); margin-top:8px;">
+    Running Jenkins build to copy logs
+  </figcaption>
+</figure>
+
+
+### Step 8: Verify Logs on Storage Server
+
+Login to the storage server and verify the copied logs.
+
+```bash
+cd /usr/src/itadmin
+ls -laa
+```
+
+#### Output
+
+```bash
+[natasha@ststor01 itadmin]$ ls -laa
+total 20
+drwxr-xr-x 2 natasha natasha 4096 Mar 11 14:59 .
+drwxr-xr-x 1 natasha natasha 4096 Mar 11 14:58 ..
+-rw-r--r-- 1 natasha natasha   41 Mar 11 14:59 access_log
+-rw-r--r-- 1 natasha natasha  733 Mar 11 14:59 error_log
+```
+
+This confirms that both **Apache logs** were successfully copied to the **Storage Server**.
+
