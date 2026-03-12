@@ -6810,6 +6810,12 @@ To allow Jenkins to copy logs between servers automatically, we first configure 
 
 #### Generate SSH Key
 
+Go to the jenkins Server :
+
+```sh
+ssh jenkins@jenkins
+```
+
 ```bash
 ssh-keygen -t rsa -b 2048
 ```
@@ -6993,4 +6999,164 @@ drwxr-xr-x 1 natasha natasha 4096 Mar 11 14:58 ..
 ```
 
 This confirms that both **Apache logs** were successfully copied to the **Storage Server**.
+
+## **Day 74: Jenkins Database Backup Job**
+
+There is a requirement to create a Jenkins job to automate the database backup. Below you can find more details to accomplish this task:  
+
+Click on the `Jenkins` button on the top bar to access the Jenkins UI. Login using username `admin` and password `Adm!n321`.  
+1. Create a Jenkins job named `database-backup`.  
+2. Configure it to take a database dump of the `kodekloud_db01` database present on the **App server (stapp01)** in Stratos Datacenter, the database user is `kodekloud_roy` and password is `asdfgdsd`.  
+3. The dump should be named in `db_$(date +%F).sql` format, where `date +%F` is the current date.
+4. Copy the `db_$(date +%F).sql` dump to the **Storage server (ststor01)** under location `/home/natasha/db_backups`.  
+5. Further, schedule this job to run periodically at `*/10 * * * *` (please use this exact schedule format).  
+    
+`Note:`  
+6. You might need to install some plugins and restart Jenkins service. So, we recommend clicking on `Restart Jenkins when installation is complete and no jobs are running` on plugin installation/update page i.e `update centre`. Also, Jenkins UI sometimes gets stuck when Jenkins service restarts in the back end. In this case please make sure to refresh the UI page.  
+7. Please make sure to define you cron expression like this `*/10 * * * *` (this is just an example to run job every 10 minutes).  
+8. For these kind of scenarios requiring changes to be done in a web UI, please take screenshots so that you can share it with us for review in case your task is marked incomplete. You may also consider using a screen recording software such as loom.com to record and share your work.
+
+
+
+### Step 1: Login to Jenkins
+
+1. Click on the **Jenkins** button on the top bar.
+2. Login using the following credentials:
+
+* Username: `admin`
+* Password: `Adm!n321`
+
+<figure style="max-width:720px; margin:0 auto; text-align:center;">
+  <img src="../assets/Images/jenkins_login_page.png"
+       alt="Jenkins Login"
+       style="width:100%; max-width:720px; display:block; margin:0 auto;
+              border-radius:18px; box-shadow:0 8px 24px rgba(0,0,0,0.12);
+              border:1px solid rgba(0,0,0,0.06); object-fit:cover;" />
+  <figcaption style="font-size:0.9rem; color:var(--text-muted,#666); margin-top:8px;">
+    Jenkins Login Page
+  </figcaption>
+</figure>
+
+---
+
+### Step 2: Setup Passwordless SSH Access
+
+To allow Jenkins to automatically take database dumps and copy them to the storage server, we need **SSH key-based authentication**.
+
+#### Generate SSH Key
+
+Go to the jenkins Server :
+
+```sh
+ssh jenkins@jenkins
+```
+
+
+```bash
+ssh-keygen -t rsa -b 2048
+```
+
+Press **Enter** for all prompts to generate the key.
+
+#### Copy SSH Key to App Server (stapp01)
+
+
+
+```bash
+ssh-copy-id tony@stapp01
+```
+
+Verify the connection:
+
+```bash
+ssh tony@stapp01
+```
+
+#### Copy SSH Key to Storage Server (ststor01)
+
+```bash
+ssh-copy-id natasha@ststor01
+```
+
+Verify connection:
+
+```bash
+ssh natasha@ststor01
+```
+
+---
+
+### Step 3: Create a New Jenkins Job
+
+1. From the Jenkins dashboard, click **New Item**.
+2. Enter the job name:
+
+```
+database-backup
+```
+
+3. Select **Freestyle Project**.
+4. Click **OK**.
+
+
+### Step 4: Configure the Job to Take Database Dump and Copy to Storage
+
+1. Scroll to the **Build** section and click **Add build step → Execute shell**.
+2. Add the following shell script:
+
+```bash
+# Get current date
+DATE=$(date +%F)
+
+# Dump the database from App server
+ssh tony@stapp01 "mysqldump -u kodekloud_roy -pasdfgdsd kodekloud_db01 > /tmp/db_$DATE.sql"
+
+# Copy the dump to Storage server
+scp tony@stapp01:/tmp/db_$DATE.sql natasha@ststor01:/home/natasha/db_backups/db_$DATE.sql
+
+# Remove temporary dump from App server
+ssh tony@stapp01 "rm -f /tmp/db_$DATE.sql"
+```
+
+3. Scroll to **Build Triggers**, check **Build periodically**, and add the cron schedule:
+
+```
+*/10 * * * *
+```
+
+<figure style="max-width:720px; margin:0 auto; text-align:center;">
+  <img src="../assets/Images/jenkins_database_backup_job.png"
+       alt="Create Jenkins Job"
+       style="width:100%; max-width:720px; display:block; margin:0 auto;
+              border-radius:18px; box-shadow:0 8px 24px rgba(0,0,0,0.12);
+              border:1px solid rgba(0,0,0,0.06); object-fit:cover;" />
+  <figcaption style="font-size:0.9rem; color:var(--text-muted,#666); margin-top:8px;">
+    Creating Jenkins Job database-backup
+  </figcaption>
+</figure>
+
+
+4. Click **Save**.
+
+
+### Step 5: Run and Verify the Job
+
+1. Click **Build Now** to test the job.
+2. Confirm in the Jenkins console output that the job ran successfully:
+
+```
+Started by user admin
+Building in workspace /var/lib/jenkins/workspace/database-backup
++ date +%F
++ DATE=2026-03-12
++ ssh tony@stapp01 mysqldump -u kodekloud_roy -pasdfgdsd kodekloud_db01 > /tmp/db_2026-03-12.sql
++ scp tony@stapp01:/tmp/db_2026-03-12.sql natasha@ststor01:/home/natasha/db_backups/db_2026-03-12.sql
+Finished: SUCCESS
+```
+
+3. Verify on **ststor01** that the database dump is present:
+
+```bash
+ls -l /home/natasha/db_backups/
+```
 
