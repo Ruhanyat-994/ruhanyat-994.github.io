@@ -4,7 +4,7 @@ icon: fas fa-info-circle
 order: 4
 ---
 
-# MIAN AL RUHANYAT
+## MIAN AL RUHANYAT
 
 **DevOps, Cloud & Security Enthusiast**
 
@@ -27,7 +27,7 @@ order: 4
 
 ### 💼 Experience
 
-**California Energy Commission** | _May 2025 – June 2025_
+**California Energy Commission** | (May 2025 – June 2025)
 - Developed automation test scripts for the California Energy Commission (Freelance Project).[Github](https://github.com/Ruhanyat-994/CaliforniaEnergyCommission)
 
 **Open Source**
@@ -61,7 +61,7 @@ order: 4
 
 ### 🎓 Education
 
-|**<div style="text-align: center">#</div>**|**Degree / Certificate**|**Institution**|**Result**|**Year**|
+|**#**|**Degree / Certificate**|**Institution**|**Result**|**Year**|
 |---|---|---|---|---|
 |1|B.Sc. in Computer Science and Engineering|United International University|Pursuing|Expected 2027|
 |2|Higher Secondary Certificate (HSC)|Govt. Science College, Dhaka|GPA: 5.00|2022|
