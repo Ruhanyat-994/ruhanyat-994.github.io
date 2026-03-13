@@ -38,7 +38,7 @@ order: 4
 
 ### 🚀 Projects
 
-[**Invoice Microservice: Invoice Generate and Deploy on Single Node EKS Cluster**](github.com/Ruhanyat-994/Invoice-Microservice)
+[**Invoice Microservice: Invoice Generate and Deploy on Single Node EKS Cluster**](https://github.com/Ruhanyat-994/Invoice-Microservice)
 - **Tech Stack:** Python, Flask, RabbitMQ, MongoDB, PostgreSQL, AWS(EKS), Kubernetes, Helm.
 - Implemented asynchronous invoice generation (PDF, Excel, CSV) via RabbitMQ.
 - Deployed 5 microservices, PostgreSQL, and MongoDB on a Kubernetes Cluster using Helm Charts.
