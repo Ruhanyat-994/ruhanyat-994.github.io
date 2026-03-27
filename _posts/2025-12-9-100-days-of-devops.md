@@ -7160,3 +7160,226 @@ Finished: SUCCESS
 ls -l /home/natasha/db_backups/
 ```
 
+## **Day 75: Jenkins Slave Nodes**
+
+The Nautilus DevOps team has installed and configured new Jenkins server in Stratos DC which they will use for CI/CD and for some automation tasks. There is a requirement to add all app servers as slave nodes in Jenkins so that they can perform tasks on these servers using Jenkins. Find below more details and accomplish the task accordingly.  
+  
+Click on the `Jenkins` button on the top bar to access the Jenkins UI. Login using username `admin` and password `Adm!n321`.  
+1. Add all app servers as SSH build agent/slave nodes in Jenkins. Slave node name for `app server 1`, `app server 2` and `app server 3` must be `App_server_1`, `App_server_2`, `App_server_3` respectively.  
+2. Add labels as below:  
+  
+`App_server_1 : stapp01`  
+`App_server_2 : stapp02`  
+`App_server_3 : stapp03`  
+
+3. Remote root directory for `App_server_1` must be `/home/tony/jenkins`, for `App_server_2` must be `/home/steve/jenkins` and for `App_server_3` must be `/home/banner/jenkins`.  
+4. Make sure slave nodes are online and working properly.  
+`Note:`  
+5. You might need to install some plugins and restart Jenkins service. So, we recommend clicking on `Restart Jenkins when installation is complete and no jobs are running` on plugin installation/update page i.e `update centre`. Also, Jenkins UI sometimes gets stuck when Jenkins service restarts in the back end. In this case, please make sure to refresh the UI page.  
+6. For these kind of scenarios requiring changes to be done in a web UI, please take screenshots so that you can share it with us for review in case your task is marked incomplete. You may also consider using a screen recording software such as loom.com to record and share your work.
+
+
+### Step 1: Login to Jenkins
+
+1. Click on the **Jenkins** button on the top bar.
+2. Login using the following credentials:
+
+* Username: `admin`
+* Password: `Adm!n321`
+
+
+### Step 2: Setup Passwordless SSH Access for All App Servers
+
+To allow Jenkins to connect to app servers, we configure **SSH key-based authentication**.
+
+#### Generate SSH Key on Jenkins Server
+
+```bash
+ssh-keygen -t rsa -b 2048
+```
+
+Press **Enter** for all prompts.
+
+#### Copy SSH Key to App Server 1
+
+```bash
+ssh-copy-id tony@stapp01
+```
+
+Verify:
+
+```bash
+ssh tony@stapp01
+```
+
+#### Copy SSH Key to App Server 2
+
+```bash
+ssh-copy-id steve@stapp02
+```
+
+Verify:
+
+```bash
+ssh steve@stapp02
+```
+
+#### Copy SSH Key to App Server 3
+
+```bash
+ssh-copy-id banner@stapp03
+```
+
+Verify:
+
+```bash
+ssh banner@stapp03
+```
+
+### Step 3: Install Required Plugins in Jenkins
+
+1. Go to **Manage Jenkins → Plugins → Available Plugins**
+2. Install:
+
+* SSH Build Agents Plugin
+
+3. Restart Jenkins after installation.
+
+
+<figure style="max-width:720px; margin:0 auto; text-align:center;">
+  <img src="../assets/Images/jenkins_ssh_agent.png"
+       alt="Jenkins Plugin Installation"
+       style="width:100%; max-width:720px; display:block; margin:0 auto;
+              border-radius:18px; box-shadow:0 8px 24px rgba(0,0,0,0.12);
+              border:1px solid rgba(0,0,0,0.06); object-fit:cover;" />
+  <figcaption style="font-size:0.9rem; color:var(--text-muted,#666); margin-top:8px;">
+    Installing SSH Build Agents Plugin
+  </figcaption>
+</figure>
+
+
+
+### Step 4: Upgrade Java on App Servers
+
+Jenkins agents require a compatible Java version.
+
+#### Install Java 21
+
+On all app servers:
+
+```bash
+sudo yum install java-21-openjdk -y
+```
+
+#### Set Java 21 as Default
+
+```bash
+sudo alternatives --config java
+```
+
+Select **Java 21**.
+
+Verify:
+
+```bash
+java -version
+```
+
+
+### Step 5: Add SSH Credentials in Jenkins
+
+1. Go to **Manage Jenkins → Credentials**
+2. Click **Add Credentials**
+
+Fill:
+
+* Kind: `SSH Username with private key`
+* Username: `tony` / `steve` / `banner`
+* Private Key: Paste from `~/.ssh/id_rsa`
+
+Repeat for all three users.
+
+
+<figure style="max-width:720px; margin:0 auto; text-align:center;">
+  <img src="../assets/Images/jenkins_credentials.png"
+       alt="Jenkins Credentials"
+       style="width:100%; max-width:720px; display:block; margin:0 auto;
+              border-radius:18px; box-shadow:0 8px 24px rgba(0,0,0,0.12);
+              border:1px solid rgba(0,0,0,0.06); object-fit:cover;" />
+  <figcaption style="font-size:0.9rem; color:var(--text-muted,#666); margin-top:8px;">
+    Adding SSH Credentials in Jenkins
+  </figcaption>
+</figure>
+
+
+### Step 6: Create Jenkins Nodes (Agents)
+
+Go to:
+
+**Manage Jenkins → Nodes → New Node**
+
+
+#### App Server 1 Configuration
+
+* Name: `App_server_1`
+* Remote root directory: `/home/tony/jenkins`
+* Labels: `stapp01`
+* Launch method: `Launch agents via SSH`
+* Host: `stapp01`
+* Credentials: `tony`
+* Host Key Strategy: `Non verifying Verification Strategy`
+
+#### App Server 2 Configuration
+
+* Name: `App_server_2`
+* Remote root directory: `/home/steve/jenkins`
+* Labels: `stapp02`
+* Host: `stapp02`
+* Credentials: `steve`
+
+
+#### App Server 3 Configuration
+
+* Name: `App_server_3`
+* Remote root directory: `/home/banner/jenkins`
+* Labels: `stapp03`
+* Host: `stapp03`
+* Credentials: `banner`
+
+
+<figure style="max-width:720px; margin:0 auto; text-align:center;">
+  <img src="../assets/Images/jenkins_node_config.png"
+       alt="Node Configuration"
+       style="width:100%; max-width:720px; display:block; margin:0 auto;
+              border-radius:18px; box-shadow:0 8px 24px rgba(0,0,0,0.12);
+              border:1px solid rgba(0,0,0,0.06); object-fit:cover;" />
+  <figcaption style="font-size:0.9rem; color:var(--text-muted,#666); margin-top:8px;">
+    Jenkins Node Configuration
+  </figcaption>
+</figure>
+
+
+### Step 7: Launch and Verify Nodes
+
+1. Go to **Manage Jenkins → Nodes**
+2. Click each node
+3. Click **Launch Agent**
+
+
+### Expected Result
+
+* All nodes show **ONLINE**
+* No errors in logs
+* Agents connected successfully via SSH
+
+<figure style="max-width:720px; margin:0 auto; text-align:center;">
+  <img src="../assets/Images/jenkins_nodes_log.png"
+       alt="Nodes Online"
+       style="width:100%; max-width:720px; display:block; margin:0 auto;
+              border-radius:18px; box-shadow:0 8px 24px rgba(0,0,0,0.12);
+              border:1px solid rgba(0,0,0,0.06); object-fit:cover;" />
+  <figcaption style="font-size:0.9rem; color:var(--text-muted,#666); margin-top:8px;">
+    All Jenkins Nodes Logs
+  </figcaption>
+</figure>
+
