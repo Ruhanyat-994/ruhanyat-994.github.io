@@ -7383,3 +7383,160 @@ Go to:
   </figcaption>
 </figure>
 
+## **Day 76: Jenkins Project Security**
+
+The xFusionCorp Industries has recruited some new developers. There are already some existing jobs on Jenkins and two of these new developers need permissions to access those jobs. The development team has already shared those requirements with the DevOps team, so as per details mentioned below grant required permissions to the developers.  
+  
+Click on the `Jenkins` button on the top bar to access the Jenkins UI. Login using username `admin` and password `Adm!n321`.  
+
+1. There is an existing Jenkins job named `Packages`, there are also two existing Jenkins users named `sam` with password `sam@pass12345` and `rohan` with password `rohan@pass12345`.  
+2. Grant permissions to these users to access `Packages` job as per details mentioned below:  
+    a.) Make sure to select `Inherit permissions from parent ACL` under `inheritance strategy` for granting permissions to these users.  
+    b.) Grant mentioned permissions to `sam` user : `build`, `configure` and `read`.  
+    c.) Grant mentioned permissions to `rohan` user : `build`, `cancel`, `configure`, `read`, `update` and `tag`.  
+
+`Note:`  
+
+1. Please do not modify/alter any other existing job configuration.  
+2. You might need to install some plugins and restart Jenkins service. So, we recommend clicking on `Restart Jenkins when installation is complete and no jobs are running` on plugin installation/update page i.e `update centre`. Also Jenkins UI sometimes gets stuck when Jenkins service restarts in the back end. In this case, please make sure to refresh the UI page.  
+3. For these kind of scenarios requiring changes to be done in a web UI, please take screenshots so that you can share it with us for review in case your task is marked incomplete. You may also consider using a screen recording software such as loom.com to record and share your work.
+
+
+### Step 1: Login to Jenkins
+
+1. Click on the **Jenkins** button on the top bar.
+2. Login using the following credentials:
+
+* Username: `admin`
+* Password: `Adm!n321`
+
+<figure style="max-width:720px; margin:0 auto; text-align:center;">
+  <img src="../assets/Images/jenkins_login_page.png"
+       alt="Jenkins Login"
+       style="width:100%; max-width:720px; display:block; margin:0 auto;
+              border-radius:18px; box-shadow:0 8px 24px rgba(0,0,0,0.12);
+              border:1px solid rgba(0,0,0,0.06); object-fit:cover;" />
+  <figcaption style="font-size:0.9rem; color:var(--text-muted,#666); margin-top:8px;">
+    Jenkins Login Page
+  </figcaption>
+</figure>
+
+### Step 2: Install Matrix Authorization Strategy Plugin
+
+1. From the dashboard, click **Manage Jenkins**.
+2. Click on **Manage Plugins**.
+3. Go to the **Available** tab.
+4. Search for:
+
+```
+Matrix Authorization Strategy
+```
+
+5. Select the plugin and click Install.
+
+<figure style="max-width:720px; margin:0 auto; text-align:center;">
+  <img src="../assets/Images/jenkins_plugin_install.png"
+       alt="Install Plugin"
+       style="width:100%; max-width:720px; display:block; margin:0 auto;
+              border-radius:18px; box-shadow:0 8px 24px rgba(0,0,0,0.12);
+              border:1px solid rgba(0,0,0,0.06); object-fit:cover;" />
+  <figcaption style="font-size:0.9rem; color:var(--text-muted,#666); margin-top:8px;">
+    Installing Matrix Authorization Strategy Plugin
+  </figcaption>
+</figure>
+
+### Step 3: Enable Global Security and Authorization
+
+1. Go to **Manage Jenkins → Configure Global Security**.
+2. Check **Enable Security**.
+3. Under **Authorization**, select:
+
+```
+Project-based Matrix Authorization Strategy
+```
+
+4. Add the following users:
+
+   * `sam`
+   * `rohan`
+
+5. Grant **Read** permission to both users at the global level.
+
+6. Click **Save**.
+
+<figure style="max-width:720px; margin:0 auto; text-align:center;">
+  <img src="../assets/Images/jenkins_global_security.png"
+       alt="Global Security Configuration"
+       style="width:100%; max-width:720px; display:block; margin:0 auto;
+              border-radius:18px; box-shadow:0 8px 24px rgba(0,0,0,0.12);
+              border:1px solid rgba(0,0,0,0.06); object-fit:cover;" />
+  <figcaption style="font-size:0.9rem; color:var(--text-muted,#666); margin-top:8px;">
+    Enabling Security and Setting Global Permissions
+  </figcaption>
+</figure>
+
+### Step 4: Configure Job-Level Permissions for Packages Job
+
+1. From the dashboard, open the **Packages** job.
+2. Click on **Configure**.
+3. Scroll down to the **Authorization** section.
+4. Select:
+
+```
+Project-based Matrix Authorization Strategy
+```
+
+5. Enable:
+
+```
+Inherit permissions from parent ACL
+```
+
+### Step 5: Add Users and Assign Job-Level Permissions
+
+1. In the same **Authorization** section, add:
+
+   * `sam`
+   * `rohan`
+
+2. Assign permissions as follows:
+
+#### For user `sam`:
+
+* Read
+* Build
+* Configure
+
+#### For user `rohan`:
+
+* Read
+* Build
+* Cancel
+* Configure
+* Update
+* Tag
+
+3. Click **Save** after assigning permissions.
+
+<figure style="max-width:720px; margin:0 auto; text-align:center;">
+  <img src="../assets/Images/jenkins_project_auth.png"
+       alt="Project Authorization"
+       style="width:100%; max-width:720px; display:block; margin:0 auto;
+              border-radius:18px; box-shadow:0 8px 24px rgba(0,0,0,0.12);
+              border:1px solid rgba(0,0,0,0.06); object-fit:cover;" />
+  <figcaption style="font-size:0.9rem; color:var(--text-muted,#666); margin-top:8px;">
+    Enabling Project-Based Authorization
+  </figcaption>
+</figure>
+
+### Step 6: Verification
+
+1. Logout from the admin account.
+
+2. Login using `sam` credentials:
+
+   * Verify access to **read, build, and configure** the Packages job.
+
+3. Login using `rohan` credentials:
+
+   * Verify access to **read, build, cancel, configure, update, and tag** the job.
