@@ -327,6 +327,7 @@ curl -k -u elastic:<YOUR_PASSWORD> https://localhost:9200/_cat/indices?v
 
 ## Step 7 — Set Up Kibana Dashboards
 
+
 Open Kibana in your browser and log in with `elastic` and the password saved during Elasticsearch install.
 
 ### Create a Data View
@@ -341,6 +342,17 @@ Open Kibana in your browser and log in with `elastic` and the password saved dur
 ### Verify Logs in Discover
 
 Go to **Analytics → Discover**, select the `Winlogbeat` data view from the dropdown. You should see Windows events streaming in with fields like `event.code`, `host.name`, `winlog.channel`, `message`, and `@timestamp`.
+
+<figure style="max-width:720px; margin:0 auto; text-align:center;">
+  <img src="../assets/Images/Kibana_dash.jpg"
+       alt="Logs reaching Elasticsearch — winlogbeat-* indices visible with doc counts"
+       style="width:100%; max-width:720px; display:block; margin:0 auto;
+              border-radius:18px; box-shadow:0 8px 24px rgba(0,0,0,0.12);
+              border:1px solid rgba(0,0,0,0.06); object-fit:cover;" />
+  <figcaption style="font-size:0.9rem; color:var(--text-muted,#666); margin-top:8px;">
+    Kibana
+  </figcaption>
+</figure>
 
 ### Useful KQL Searches
 
@@ -468,6 +480,4 @@ Windows Client (10.0.1.85)
 - Real-time event streams from both the Domain Controller and the client machine
 - Thousands of indexed documents across multiple daily indices
 - Searchable AD event codes for security analysis
-
-This SIEM foundation will be used in our UIU research to study Active Directory attack patterns, detection logic, and blue-team response workflows.
 
